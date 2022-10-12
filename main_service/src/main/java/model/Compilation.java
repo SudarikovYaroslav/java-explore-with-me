@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CompilationDto {
+public class Compilation {
     private Event[] events;
-    private Long id;
-    private Boolean pinned;
+    private long id;
+    private boolean pinned;
     private String title;
 }
