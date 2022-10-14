@@ -9,6 +9,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class CompilationPostDto {
     private Long[] events;
-    private boolean pinned;
+    private Boolean pinned;
     private String title;
 }

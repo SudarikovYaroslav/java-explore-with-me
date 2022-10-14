@@ -1,6 +1,6 @@
 package dto.event;
 
-import dto.CategoryDto;
+import dto.category.CategoryDto;
 import dto.user.UserShortDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,11 +12,11 @@ import lombok.Setter;
 public class EventShortDto {
     private String annotation;
     private CategoryDto category;
-    private int confirmedRequests;
+    private Integer confirmedRequests;
     private String eventDate;
-    private long id;
+    private Long id;
     private UserShortDto initiator;
-    private boolean paid;
+    private Boolean paid;
     private String title;
-    private long views;
+    private Long views;
 }

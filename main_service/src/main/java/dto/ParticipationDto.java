@@ -9,8 +9,8 @@ import lombok.Setter;
 @Builder
 public class ParticipationDto {
     private String created;
-    private long event;
-    private long id;
-    private long requester;
+    private Long event;
+    private Long id;
+    private Long requester;
     private String state;
 }

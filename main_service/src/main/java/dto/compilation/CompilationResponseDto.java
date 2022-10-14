@@ -10,7 +10,7 @@ import lombok.Setter;
 @Builder
 public class CompilationResponseDto {
     private EventShortDto[] events;
-    private long id;
-    private boolean pinned;
+    private Long id;
+    private Boolean pinned;
     private String title;
 }

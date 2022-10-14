@@ -9,6 +9,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class UserDto {
     private String email;
-    private long id;
+    private Long id;
     private String name;
 }

@@ -1,4 +1,4 @@
-package dto;
+package dto.category;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class CategoryDto {
+    private Long id;
     private String name;
 }

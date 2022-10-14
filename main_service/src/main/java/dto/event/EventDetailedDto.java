@@ -1,6 +1,6 @@
 package dto.event;
 
-import dto.CategoryDto;
+import dto.category.CategoryDto;
 import dto.user.UserShortDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,18 +13,18 @@ import model.Location;
 public class EventDetailedDto {
     private String annotation;
     private CategoryDto category;
-    private int confirmedRequests;
+    private Integer confirmedRequests;
     private String createdOn;
     private String description;
     private String eventDate;
-    private int id;
+    private Integer id;
     private UserShortDto initiator;
     private Location location;
-    private boolean paid;
-    private int participantLimit;
+    private Boolean paid;
+    private Integer participantLimit;
     private String publishedOn;
-    private boolean requestModeration;
+    private Boolean requestModeration;
     private String state;
     private String title;
-    private long views;
+    private Long views;
 }

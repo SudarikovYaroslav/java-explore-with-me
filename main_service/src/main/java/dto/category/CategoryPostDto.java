@@ -1,4 +1,4 @@
-package model;
+package dto.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PublicationState {
-    private Integer id;
-    private String state;
+public class CategoryPostDto {
+    private String name;
 }
