@@ -9,7 +9,7 @@ import lombok.Setter;
 @Builder
 public class Compilation {
     private Event[] events;
-    private long id;
-    private boolean pinned;
+    private Long id;
+    private Boolean pinned;
     private String title;
 }

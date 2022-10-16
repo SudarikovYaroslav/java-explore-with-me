@@ -12,6 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
 
+    private CompilationService compilationService;
+
     //TODO реализовать логику, добавить маппер и репозиторий
     @Override
     public List<CompilationResponseDto> findAll(Boolean pinned, Integer from, Integer size) {

@@ -10,7 +10,7 @@ import model.Location;
 @RequiredArgsConstructor
 public class EventPostDto {
     private String annotation;
-    private Integer category;
+    private Long category;
     private String description;
     private String eventDate;
     private Location location;

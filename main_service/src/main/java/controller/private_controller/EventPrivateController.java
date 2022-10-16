@@ -49,7 +49,7 @@ public class EventPrivateController {
     @PatchMapping("/{eventId}")
     public EventDetailedDto canselEventByIdAndOwnerId(@PathVariable Long userId,
                                                       @PathVariable Long eventId) {
-        return eventService.canselEventByIdAndOwnerId(userId, eventId);
+        return eventService.cancelEventByIdAndOwnerId(userId, eventId);
     }
 
     @GetMapping("/{eventId}/requests")

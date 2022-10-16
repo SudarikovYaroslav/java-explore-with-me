@@ -4,13 +4,16 @@ import dto.category.CategoryDto;
 import dto.category.CategoryPostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import service.CategoriesService;
+import repository.CategoryRepository;
+import service.CategoryService;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CategoriesServiceImpl implements CategoriesService {
+public class CategoryServiceImpl implements CategoryService {
+
+    private final CategoryRepository categoryRepository;
 
     //TODO реализовать логику методов, добавить маппер и репозиторий
     @Override

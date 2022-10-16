@@ -4,27 +4,27 @@ import dto.category.CategoryDto;
 import dto.category.CategoryPostDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import service.CategoriesService;
+import service.CategoryService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/categories")
 public class CategoriesAdminController {
 
-    private final CategoriesService categoriesService;
+    private final CategoryService categoryService;
 
     @PatchMapping
     public CategoryDto patchCategory(@RequestBody CategoryDto dto) {
-        return categoriesService.patchCategory(dto);
+        return categoryService.patchCategory(dto);
     }
 
     @PostMapping
     public CategoryDto addNewCategory(@RequestBody CategoryPostDto dto) {
-        return categoriesService.addNewCategory(dto);
+        return categoryService.addNewCategory(dto);
     }
 
     @DeleteMapping("/{catId}")
     public void deleteCategory(@PathVariable Long catId) {
-        categoriesService.deleteCategory(catId);
+        categoryService.deleteCategory(catId);
     }
 }

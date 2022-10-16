@@ -5,7 +5,7 @@ import dto.category.CategoryPostDto;
 
 import java.util.List;
 
-public interface CategoriesService {
+public interface CategoryService {
     List<CategoryDto> findAll(Integer from, Integer size);
 
     CategoryDto findById(Long catId);

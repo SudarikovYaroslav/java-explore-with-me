@@ -7,6 +7,7 @@ import dto.event.EventPostDto;
 import dto.event.EventShortDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import repository.EventRepository;
 import service.EventService;
 
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
+
+    private final EventRepository eventRepository;
 
     //TODO реализовать логику добавить маппер и репозиторий
     @Override
@@ -62,7 +65,7 @@ public class EventServiceImpl implements EventService {
 
     //TODO реализовать логику
     @Override
-    public EventDetailedDto canselEventByIdAndOwnerId(Long userId, Long eventId) {
+    public EventDetailedDto cancelEventByIdAndOwnerId(Long userId, Long eventId) {
         return null;
     }
 

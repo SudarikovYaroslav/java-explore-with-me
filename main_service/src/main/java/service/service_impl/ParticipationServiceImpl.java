@@ -3,6 +3,7 @@ package service.service_impl;
 import dto.ParticipationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import repository.ParticipationRepository;
 import service.ParticipationService;
 
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ParticipationServiceImpl implements ParticipationService {
+
+    private ParticipationRepository participationRepository;
 
     //TODO добавить маппер, репозиторий и реализовать логику
     @Override

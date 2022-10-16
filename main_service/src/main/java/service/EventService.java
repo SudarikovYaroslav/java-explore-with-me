@@ -31,7 +31,7 @@ public interface EventService {
 
     EventDetailedDto findEventByIdAndOwnerId(Long userId, Long eventId);
 
-    EventDetailedDto canselEventByIdAndOwnerId(Long userId, Long eventId);
+    EventDetailedDto cancelEventByIdAndOwnerId(Long userId, Long eventId);
 
     ParticipationDto getInfoAboutEventParticipation(Long userId, Long eventId);
 

@@ -2,14 +2,14 @@ package dto.event;
 
 import dto.category.CategoryDto;
 import dto.user.UserShortDto;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import model.Location;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
+@Builder
 public class EventDetailedDto {
     private String annotation;
     private CategoryDto category;
@@ -17,7 +17,7 @@ public class EventDetailedDto {
     private String createdOn;
     private String description;
     private String eventDate;
-    private Integer id;
+    private Long id;
     private UserShortDto initiator;
     private Location location;
     private Boolean paid;
