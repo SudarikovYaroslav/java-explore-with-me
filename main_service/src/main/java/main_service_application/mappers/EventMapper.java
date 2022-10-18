@@ -35,7 +35,6 @@ public class EventMapper {
                 .requestModeration(dto.getRequestModeration())
                 .state(PublicationState.PENDING)
                 .title(dto.getTitle())
-                .views(0L)
                 .build();
 
         if (event.getRequestModeration() == null) {
@@ -61,10 +60,10 @@ public class EventMapper {
                 .requestModeration(null)
                 .state(null)
                 .title(dto.getTitle())
-                .views(null)
                 .build();
     }
-    
+
+    //TODO реализовать получение количества просмотров от сервиса статистики
     public static EventShortDto toEventShortDto(Event event) {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
@@ -75,10 +74,11 @@ public class EventMapper {
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(event.getViews())
+//              .views(Сервер_статистики.getViews())
                 .build();
     }
 
+    //TODO реализовать получение количества просмотров от сервиса статистики
     public static EventDetailedDto toEventDetailedDto(Event event) {
         return EventDetailedDto.builder()
                 .annotation(event.getAnnotation())
@@ -96,7 +96,7 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState().toString())
                 .title(event.getTitle())
-                .views(event.getViews())
+//              .views(Сервер_статистики.getViews())
                 .build();
     }
 
