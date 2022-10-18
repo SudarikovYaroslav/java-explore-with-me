@@ -1,12 +1,36 @@
 package statistics_service_application.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import statistics_service_application.dto.HitDto;
+import statistics_service_application.dto.StatisticsDto;
 import statistics_service_application.service.StatisticsService;
 
+import java.util.List;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class StatisticsController {
 
     private final StatisticsService statisticsService;
+
+    @PostMapping("/hit")
+    public void postHit(@RequestBody HitDto dto) {
+        log.info("Сохраняется запрос: {}", dto);
+        statisticsService.postHit(dto);
+    }
+
+    //TODO разобраться, что метод должен вернуть в качестве ответа. Похоже, что StatisticsDto[], но не понятно,
+    // какой в этом смысл - получать сразу всю статистику, если например нужна только по одному конкретному запросу
+    // *** НУЖНО ДОБАВИТЬ КОДИРОВАНИЕ ДАТЫ ПРИ ПЕРЕДАЧЕ СТАТИСТИКИ ??? Думаю попробовать Base64
+    // !!!!!!!! пока считаю, что start и end закодированы при получении и требую декодирования в сервисе
+    @GetMapping("/stats")
+    public List<StatisticsDto> getStatistics(@RequestParam String start,
+                                             @RequestParam String end,
+                                             @RequestParam String[] uris,
+                                             @RequestParam Boolean unique) {
+        return statisticsService.getStatistics(start, end, uris, unique);
+    }
 }
