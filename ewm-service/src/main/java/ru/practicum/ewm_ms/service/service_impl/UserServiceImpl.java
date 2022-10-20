@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.dto.user.NewUserDto;
 import ru.practicum.ewm_ms.dto.user.UserDto;
-import ru.practicum.ewm_ms.exception.UserNotFoundException;
+import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.mappers.UserMapper;
 import ru.practicum.ewm_ms.model.User;
 import ru.practicum.ewm_ms.repository.UserRepository;
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         for (Long id : ids) {
             User user = userRepository.findById(id).orElse(null);
             if (user == null) {
-                throw new UserNotFoundException(NotFoundMessageGen.getUserNotFoundMessage(id));
+                throw new NotFoundException(NotFoundMessageGen.getUserNotFoundMessage(id));
             }
             result.add(user);
         }

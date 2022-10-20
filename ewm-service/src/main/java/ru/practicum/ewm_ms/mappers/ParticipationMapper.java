@@ -2,8 +2,7 @@ package ru.practicum.ewm_ms.mappers;
 
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.exception.EnumParseException;
-import ru.practicum.ewm_ms.exception.EventNotFoundException;
-import ru.practicum.ewm_ms.exception.UserNotFoundException;
+import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.model.ApplicationState;
 import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.model.Participation;
@@ -49,7 +48,7 @@ public class ParticipationMapper {
     private static Event getEventById(Long eventId, EventRepository repo) {
         Event event = repo.findById(eventId).orElse(null);
         if (event == null){
-            throw new EventNotFoundException(NotFoundMessageGen.getEventNotFoundMessage(eventId));
+            throw new NotFoundException(NotFoundMessageGen.getEventNotFoundMessage(eventId));
         }
         return event;
     }
@@ -57,7 +56,7 @@ public class ParticipationMapper {
     private static User getUserById(Long userId, UserRepository repo) {
         User user = repo.findById(userId).orElse(null);
         if (user == null){
-            throw new UserNotFoundException(NotFoundMessageGen.getUserNotFoundMessage(userId));
+            throw new NotFoundException(NotFoundMessageGen.getUserNotFoundMessage(userId));
         }
         return user;
     }
