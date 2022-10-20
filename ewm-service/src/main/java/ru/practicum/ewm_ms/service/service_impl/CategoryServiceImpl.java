@@ -1,13 +1,21 @@
 package ru.practicum.ewm_ms.service.service_impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm_ms.dto.category.CategoryDto;
 import ru.practicum.ewm_ms.dto.category.CategoryPostDto;
+import ru.practicum.ewm_ms.exception.ForbiddenException;
+import ru.practicum.ewm_ms.exception.NotFoundException;
+import ru.practicum.ewm_ms.mappers.CategoryMapper;
+import ru.practicum.ewm_ms.model.Category;
 import ru.practicum.ewm_ms.repository.CategoryRepository;
 import ru.practicum.ewm_ms.service.CategoryService;
+import ru.practicum.ewm_ms.util.NotFoundMessageGen;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,32 +23,47 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    //TODO реализовать логику методов, добавить маппер и репозиторий
     @Override
     public List<CategoryDto> findAll(Integer from, Integer size) {
-        return null;
+        Pageable pageable = PageRequest.of(from / size, size);
+        List<Category> categories = categoryRepository.findAll(pageable).toList();
+        return categories.stream().map(CategoryMapper::toDto).collect(Collectors.toList());
     }
 
-    //TODO need realisation
     @Override
     public CategoryDto findById(Long catId) {
-        return null;
+        Category category = categoryRepository.findById(catId).orElse(null);
+        if (category == null) {
+            throw new NotFoundException(NotFoundMessageGen.getCategoryNotFoundMessage(catId));
+        }
+        return CategoryMapper.toDto(category);
     }
 
-    //TODO need realisation
     @Override
     public CategoryDto patchCategory(CategoryDto dto) {
-        return null;
+        Category category = categoryRepository.findByName(dto.getName()).orElse(null);
+        if (category != null) {
+            throw new ForbiddenException("Category with name=" + dto.getName() + " already exists");
+        }
+        Category pathingCat = categoryRepository.findById(dto.getId()).orElse(null);
+        if (pathingCat == null) {
+            throw new NotFoundException(NotFoundMessageGen.getCategoryNotFoundMessage(dto.getId()));
+        }
+
+        Category newCat = CategoryMapper.toModel(dto);
+        pathingCat = categoryRepository.save(newCat);
+        return CategoryMapper.toDto(pathingCat);
     }
 
-    //TODO need realisation
     @Override
     public CategoryDto addNewCategory(CategoryPostDto dto) {
-        return null;
+        Category newCat = CategoryMapper.toModel(dto);
+        newCat = categoryRepository.save(newCat);
+        return CategoryMapper.toDto(newCat);
     }
 
-    //TODO need realisation
     @Override
     public void deleteCategory(Long catId) {
+        categoryRepository.deleteById(catId);
     }
 }
