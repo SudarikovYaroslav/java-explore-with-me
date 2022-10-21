@@ -3,6 +3,7 @@ package ru.practicum.ewm_ms.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,9 +21,13 @@ public class Compilation {
     @Column(name = ID_COLUMN_NAME)
     @GeneratedValue
     private Long id;
-    @ManyToOne
-    @JoinColumn
-    private Event[] events;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "compilation_events",
+            joinColumns = {@JoinColumn(name = "compilation_id")},
+            inverseJoinColumns = {@JoinColumn(name = "event_id")}
+    )
+    private List<Event> events;
     @Column(name = PINNED_COLUMN_NAME, nullable = false )
     private Boolean pinned;
     @Column(name = TITLE_COLUMN_NAME, nullable = false)

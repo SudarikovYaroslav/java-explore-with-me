@@ -4,40 +4,40 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.exception.ForbiddenException;
-import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.mappers.ParticipationMapper;
 import ru.practicum.ewm_ms.model.*;
 import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.ParticipationRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.service.ParticipationService;
-import ru.practicum.ewm_ms.util.NotFoundMessageGen;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.ewm_ms.util.MainServiceUtil.*;
+
 @Service
 @RequiredArgsConstructor
 public class ParticipationServiceImpl implements ParticipationService {
 
-    private final ParticipationRepository participationRepository;
-    private final EventRepository eventRepository;
-    private final UserRepository userRepository;
+    private final ParticipationRepository participationRepo;
+    private final EventRepository eventRepo;
+    private final UserRepository userRepo;
 
     @Override
     public List<ParticipationDto> getInfoAboutAllParticipation(Long userId) {
-        checkIfUserExists(userId);
-        List<Participation> participations = participationRepository.findAllByRequesterId(userId);
+        checkIfUserExists(userId, userRepo);
+        List<Participation> participations = participationRepo.findAllByRequesterId(userId);
         return participations.stream().map(ParticipationMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
     public ParticipationDto addParticipationQuery(Long userId, Long eventId) {
-        User user = checkIfUserExists(userId);
-        Event event = checkIfEventExists(eventId);
+        User user = checkIfUserExists(userId, userRepo);
+        Event event = checkIfEventExists(eventId, eventRepo);
 
-        Participation participation = participationRepository
+        Participation participation = participationRepo
                 .findByEventIdAndRequesterId(eventId, userId).orElse(null);
         if (participation != null) {
             return ParticipationMapper.toDto(participation);
@@ -65,39 +65,15 @@ public class ParticipationServiceImpl implements ParticipationService {
             newParticipation.setState(ApplicationState.PENDING);
         }
 
-        newParticipation = participationRepository.save(newParticipation);
+        newParticipation = participationRepo.save(newParticipation);
         return ParticipationMapper.toDto(newParticipation);
     }
 
     @Override
     public ParticipationDto cancelParticipation(Long userId, Long requestId) {
-        checkIfUserExists(userId);
-        Participation participation = checkIfParticipationRequestExists(requestId);
-        participationRepository.deleteById(requestId);
+        checkIfUserExists(userId, userRepo);
+        Participation participation = checkIfParticipationRequestExists(requestId, participationRepo);
+        participationRepo.deleteById(requestId);
         return ParticipationMapper.toDto(participation);
-    }
-
-    private User checkIfUserExists(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            throw new NotFoundException(NotFoundMessageGen.getUserNotFoundMessage(userId));
-        }
-        return user;
-    }
-
-    private Event checkIfEventExists(Long eventId) {
-        Event event = eventRepository.findById(eventId).orElse(null);
-        if (event == null) {
-            throw new NotFoundException(NotFoundMessageGen.getEventNotFoundMessage(eventId));
-        }
-        return event;
-    }
-
-    private Participation checkIfParticipationRequestExists(Long requestId) {
-        Participation par = participationRepository.findById(requestId).orElse(null);
-        if (par == null) {
-            throw new NotFoundException("Participation request with id=" + requestId +" was not found.");
-        }
-        return par;
     }
 }

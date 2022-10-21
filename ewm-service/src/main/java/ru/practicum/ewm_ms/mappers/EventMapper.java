@@ -11,7 +11,7 @@ import ru.practicum.ewm_ms.model.PublicationState;
 import ru.practicum.ewm_ms.model.User;
 import ru.practicum.ewm_ms.repository.CategoryRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
-import ru.practicum.ewm_ms.util.NotFoundMessageGen;
+import ru.practicum.ewm_ms.util.MainServiceUtil;
 
 import java.time.LocalDateTime;
 
@@ -104,7 +104,7 @@ public class EventMapper {
     private static Category matchCategory(Long id, CategoryRepository repo) {
         Category category = repo.findById(id).orElse(null);
         if (category == null) {
-            throw new NotFoundException(NotFoundMessageGen.getCategoryNotFoundMessage(id));
+            throw new NotFoundException(MainServiceUtil.getCategoryNotFoundMessage(id));
         }
         return category;
     }
@@ -112,7 +112,7 @@ public class EventMapper {
     private static User matchUser(Long userId, UserRepository repo) {
         User user = repo.findById(userId).orElse(null);
         if (user == null) {
-            throw new NotFoundException(NotFoundMessageGen.getUserNotFoundMessage(userId));
+            throw new NotFoundException(MainServiceUtil.getUserNotFoundMessage(userId));
         }
         return user;
     }

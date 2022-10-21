@@ -9,7 +9,7 @@ import ru.practicum.ewm_ms.model.Participation;
 import ru.practicum.ewm_ms.model.User;
 import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
-import ru.practicum.ewm_ms.util.NotFoundMessageGen;
+import ru.practicum.ewm_ms.util.MainServiceUtil;
 
 public class ParticipationMapper {
 
@@ -48,7 +48,7 @@ public class ParticipationMapper {
     private static Event getEventById(Long eventId, EventRepository repo) {
         Event event = repo.findById(eventId).orElse(null);
         if (event == null){
-            throw new NotFoundException(NotFoundMessageGen.getEventNotFoundMessage(eventId));
+            throw new NotFoundException(MainServiceUtil.getEventNotFoundMessage(eventId));
         }
         return event;
     }
@@ -56,7 +56,7 @@ public class ParticipationMapper {
     private static User getUserById(Long userId, UserRepository repo) {
         User user = repo.findById(userId).orElse(null);
         if (user == null){
-            throw new NotFoundException(NotFoundMessageGen.getUserNotFoundMessage(userId));
+            throw new NotFoundException(MainServiceUtil.getUserNotFoundMessage(userId));
         }
         return user;
     }

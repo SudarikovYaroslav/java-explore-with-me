@@ -7,7 +7,10 @@ import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.model.Compilation;
 import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.repository.EventRepository;
-import ru.practicum.ewm_ms.util.NotFoundMessageGen;
+import ru.practicum.ewm_ms.util.MainServiceUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompilationMapper {
 
@@ -30,24 +33,22 @@ public class CompilationMapper {
                 .build();
     }
 
-    private static Event[] replaceIdWithEvents(Long[] ids, EventRepository repo) {
-        Event[] events = new Event[ids.length];
-
-        for (int i = 0; i < ids.length; i++) {
-            Event event = repo.findById(ids[i]).orElse(null);
+    private static List<Event> replaceIdWithEvents(List<Long> ids, EventRepository repo) {
+        List<Event> events = new ArrayList<>();
+        for (long eventId : ids) {
+            Event event = repo.findById(eventId).orElse(null);
             if (event == null) {
-                throw new NotFoundException(NotFoundMessageGen.getEventNotFoundMessage(ids[i]));
+                throw new NotFoundException(MainServiceUtil.getEventNotFoundMessage(eventId));
             }
-            events[i] = event;
+            events.add(event);
         }
         return events;
     }
 
-    private static EventShortDto[] replaceEventsWithEventShortDto(Event[] events) {
-        EventShortDto[] dtos = new EventShortDto[events.length];
-
-        for (int i = 0; i < events.length; i++) {
-            dtos[i] = EventMapper.toEventShortDto(events[i]);
+    private static List<EventShortDto> replaceEventsWithEventShortDto(List<Event> events) {
+        List<EventShortDto> dtos = new ArrayList<>();
+        for (Event ev : events) {
+            dtos.add(EventMapper.toEventShortDto(ev));
         }
         return dtos;
     }

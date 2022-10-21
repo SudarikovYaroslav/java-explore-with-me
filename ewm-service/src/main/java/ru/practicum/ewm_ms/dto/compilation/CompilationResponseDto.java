@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.ewm_ms.dto.event.EventShortDto;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 public class CompilationResponseDto {
-    private EventShortDto[] events;
+    private List<EventShortDto> events;
     private Long id;
     private Boolean pinned;
     private String title;

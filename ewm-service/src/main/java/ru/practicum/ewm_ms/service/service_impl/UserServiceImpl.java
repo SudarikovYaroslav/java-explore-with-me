@@ -12,7 +12,7 @@ import ru.practicum.ewm_ms.mappers.UserMapper;
 import ru.practicum.ewm_ms.model.User;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.service.UserService;
-import ru.practicum.ewm_ms.util.NotFoundMessageGen;
+import ru.practicum.ewm_ms.util.MainServiceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         for (Long id : ids) {
             User user = userRepository.findById(id).orElse(null);
             if (user == null) {
-                throw new NotFoundException(NotFoundMessageGen.getUserNotFoundMessage(id));
+                throw new NotFoundException(MainServiceUtil.getUserNotFoundMessage(id));
             }
             result.add(user);
         }

@@ -7,6 +7,7 @@ import ru.practicum.ewm_ms.dto.user.NewUserDto;
 import ru.practicum.ewm_ms.dto.user.UserDto;
 import ru.practicum.ewm_ms.service.UserService;
 
+import javax.validation.constraints.Positive;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class UserAdminController {
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
+    public void deleteUser(@Positive
+                           @PathVariable Long userId) {
         log.info("Delete User id: {}", userId);
         userService.deleteUser(userId);
     }
