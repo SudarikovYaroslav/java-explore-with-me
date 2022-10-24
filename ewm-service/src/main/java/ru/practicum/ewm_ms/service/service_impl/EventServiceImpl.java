@@ -25,18 +25,15 @@ import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.service.EventService;
 import ru.practicum.ewm_ms.util.Util;
 
-import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.ewm_ms.util.EventServiceUtil.*;
 
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
-
-    public static final long HOURS_LEFT_BEFORE_EVENT = 2;
-    public static final long HOURS_LEFT_AFTER_PUBLICATION = 1;
 
     private final ParticipationRepository participationRepo;
     private final CategoryRepository categoryRepo;
@@ -50,7 +47,7 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize(), sort);
         Specification<Event> specification = getSpecification(params, true);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
-        addViewForEach(events);
+        addViewForEach(events, eventRepo);
         client.postHit(endpoint, clientIp);
         return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
@@ -61,7 +58,7 @@ public class EventServiceImpl implements EventService {
         if (event == null) {
             throw new NotFoundException(Util.getEventNotFoundMessage(id));
         }
-        event = addView(event);
+        event = addView(event, eventRepo);
         client.postHit(endpoint, clientIp);
         return EventMapper.toEventDetailedDto(event);
     }
@@ -82,7 +79,7 @@ public class EventServiceImpl implements EventService {
             throw new ForbiddenException("Only pending or canceled events can be changed");
         }
 
-        updateEvent(event, dto);
+        updateEvent(event, dto, categoryRepo);
         if (event.getState().equals(PublicationState.CANCEL)) {
             event.setState(PublicationState.PENDING);
         }
@@ -154,8 +151,8 @@ public class EventServiceImpl implements EventService {
         }
 
         participation.setState(ParticipationState.CONFIRMED);
-        increaseConfirmedRequest(event);
-        checkParticipationLimit(event);
+        increaseConfirmedRequest(event, eventRepo);
+        checkParticipationLimit(event, participationRepo);
         participation = participationRepo.save(participation);
         return ParticipationMapper.toDto(participation);
     }
@@ -248,118 +245,5 @@ public class EventServiceImpl implements EventService {
         event.setState(PublicationState.REJECTED);
         event = eventRepo.save(event);
         return EventMapper.toEventDetailedDto(event);
-    }
-
-    private Specification<Event> getSpecification(EventSearchParams params, boolean publicRequest) {
-        return  (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (params.getUserIds() != null) {
-                for (Long userId : params.getUserIds()) {
-                    predicates.add(criteriaBuilder.equal(root.get("initiator_id"), userId));
-                }
-            }
-            if (publicRequest) {
-                predicates.add(criteriaBuilder.equal(root.get("state"), PublicationState.PUBLISHED));
-            } else {
-                for (PublicationState state : params.getStates()) {
-                    predicates.add(criteriaBuilder.equal(root.get("state"), state));
-                }
-            }
-            if (null != params.getText()) {
-                predicates.add(criteriaBuilder.like(root.get("annotation"), "%"+params.getText()+"%"));
-                predicates.add(criteriaBuilder.like(root.get("description"), "%"+params.getText()+"%"));
-            }
-            if (null != params.getCategories() && !params.getCategories().isEmpty()){
-                for (Long catId : params.getCategories()) {
-                    predicates.add(criteriaBuilder.equal(root.get("category_id"), catId));
-                }
-            }
-            if (null != params.getPaid()) {
-                predicates.add(criteriaBuilder.equal(root.get("paid"), params.getPaid()));
-            }
-            if (null != params.getRangeStart()) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("published_on"), params.getRangeStart()));
-            } else {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("published_on"), LocalDateTime.now()));
-            }
-            if (null != params.getRangeEnd()) {
-                predicates.add(criteriaBuilder.lessThan(root.get("published_on"), params.getRangeEnd()));
-            } else {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("published_on"), LocalDateTime.now()));
-            }
-            if (null != params.getOnlyAvailable() && params.getOnlyAvailable()) {
-                predicates.add(criteriaBuilder.lessThan(root.get("participant_limit"), root.get("confirmed_Requests")));
-            }
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
-    }
-
-    private void updateEvent(Event event, EventPatchDto update) {
-        if (update.getAnnotation() != null) {
-            event.setAnnotation(update.getAnnotation());
-        }
-        if (update.getCategory() != null) {
-            Category category = Util.checkIfCategoryExists(update.getCategory(), categoryRepo);
-            event.setCategory(category);
-        }
-        if (update.getDescription() != null) {
-            event.setDescription(update.getDescription());
-        }
-        if (update.getEventDate() != null) {
-            if (!isEventDateOk(update.getEventDate())) {
-                throw new ForbiddenException("the event can be changed no later than 2 hours before the start");
-            }
-            event.setEventDate(DateTimeMapper.toDateTime(update.getEventDate()));
-        }
-        if (update.getPaid() != null) {
-            event.setPaid(update.getPaid());
-        }
-        if (update.getParticipantLimit() != null) {
-            event.setParticipantLimit(update.getParticipantLimit());
-        }
-        if (update.getTitle() != null) {
-            event.setTitle(update.getTitle());
-        }
-    }
-
-    private boolean isEventDateOk(String eventDate) {
-        LocalDateTime date = DateTimeMapper.toDateTime(eventDate);
-        return date.isAfter(LocalDateTime.now().plusHours(HOURS_LEFT_BEFORE_EVENT));
-    }
-
-    private Event addView(Event event) {
-        long views = event.getViews() + 1;
-        event.setViews(views);
-        return eventRepo.save(event);
-    }
-
-    private void addViewForEach(List<Event> events) {
-        for (Event event : events) {
-            addView(event);
-        }
-    }
-
-    private void increaseConfirmedRequest(Event event) {
-        int confirmedRec = event.getConfirmedRequests() + 1;
-        event.setConfirmedRequests(confirmedRec);
-        eventRepo.save(event);
-    }
-
-    private void checkParticipationLimit(Event event) {
-        if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
-            List<Participation> participations = participationRepo
-                    .findAllByEventIdAndState(event.getId(), ParticipationState.PENDING);
-
-            for (Participation par : participations) {
-                par.setState(ParticipationState.REJECT);
-                participationRepo.save(par);
-            }
-        }
-    }
-
-    private boolean isMayPublish(Event event) {
-        return event.getEventDate().isAfter(LocalDateTime.now().plusHours(HOURS_LEFT_AFTER_PUBLICATION));
     }
 }
