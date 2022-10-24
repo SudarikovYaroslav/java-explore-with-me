@@ -31,5 +31,5 @@ public class Participation {
     @ManyToOne
     @JoinColumn(name = REQUESTER_ID_COLUMN_NAME)
     private User requester;
-    private ApplicationState state;
+    private ParticipationState state;
 }

@@ -8,5 +8,5 @@ import java.util.List;
 public interface StatisticsService {
     void postHit(HitDto dto);
 
-    List<StatisticsDto> getStatistics(String start, String end, String[] uris, Boolean unique);
+    List<StatisticsDto> getStatistics(String start, String end, List<String> uris, Boolean unique);
 }

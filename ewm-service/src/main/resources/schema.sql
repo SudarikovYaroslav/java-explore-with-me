@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS events
     request_moderation boolean                                                   NOT NULL,
     state              varchar(64)                                               NOT NULL,
     title              VARCHAR(256)                                              NOT NULL,
+    views              BIGINT,
     PRIMARY KEY (event_id)
 );
 

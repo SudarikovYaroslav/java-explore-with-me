@@ -1,18 +1,15 @@
 package ru.practicum.ewm_ms.util;
 
 import ru.practicum.ewm_ms.exception.NotFoundException;
-import ru.practicum.ewm_ms.model.Compilation;
-import ru.practicum.ewm_ms.model.Event;
-import ru.practicum.ewm_ms.model.Participation;
-import ru.practicum.ewm_ms.model.User;
-import ru.practicum.ewm_ms.repository.CompilationRepository;
-import ru.practicum.ewm_ms.repository.EventRepository;
-import ru.practicum.ewm_ms.repository.ParticipationRepository;
-import ru.practicum.ewm_ms.repository.UserRepository;
+import ru.practicum.ewm_ms.model.*;
+import ru.practicum.ewm_ms.repository.*;
 
-public class MainServiceUtil {
+import java.util.ArrayList;
+import java.util.List;
 
-    private MainServiceUtil() {
+public class Util {
+
+    private Util() {
     }
 
     public static String getUserNotFoundMessage(long userId) {
@@ -59,11 +56,42 @@ public class MainServiceUtil {
         return par;
     }
 
-    public static Compilation cheIfCompilationExists(Long compId, CompilationRepository repo) {
+    public static Compilation checkIfCompilationExists(Long compId, CompilationRepository repo) {
         Compilation compilation = repo.findById(compId).orElse(null);
         if (compilation == null) {
             throw new NotFoundException(getCompilationNotFoundMessage(compId));
         }
         return compilation;
+    }
+
+    public static Category checkIfCategoryExists(Long catId, CategoryRepository repo) {
+        Category category = repo.findById(catId).orElse(null);
+        if (category == null) {
+            throw new NotFoundException(getCategoryNotFoundMessage(catId));
+        }
+        return category;
+    }
+
+    public static EventSort parseSort(String str) {
+        EventSort sort;
+        try {
+            sort = EventSort.valueOf(str.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("invalid Sort value: " + str);
+        }
+        return sort;
+    }
+
+    public static List<PublicationState> mapToStates(List<String> stateNames) {
+        List<PublicationState> result = new ArrayList<>();
+        for (String name : stateNames) {
+            PublicationState state = PublicationState.valueOf(name.toUpperCase());
+            result.add(state);
+        }
+        return result;
+    }
+
+    public static Category mapIdToCategory(Long catId, CategoryRepository repo) {
+        return repo.findById(catId).orElseThrow(()-> new NotFoundException(getCategoryNotFoundMessage(catId)));
     }
 }

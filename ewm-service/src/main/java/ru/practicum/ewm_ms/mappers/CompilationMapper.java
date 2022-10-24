@@ -7,7 +7,7 @@ import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.model.Compilation;
 import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.repository.EventRepository;
-import ru.practicum.ewm_ms.util.MainServiceUtil;
+import ru.practicum.ewm_ms.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class CompilationMapper {
         for (long eventId : ids) {
             Event event = repo.findById(eventId).orElse(null);
             if (event == null) {
-                throw new NotFoundException(MainServiceUtil.getEventNotFoundMessage(eventId));
+                throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
             }
             events.add(event);
         }

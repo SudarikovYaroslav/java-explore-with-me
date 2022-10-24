@@ -25,7 +25,7 @@ public class EventPrivateController {
     public List<EventShortDto> findEventsByUserId(@PathVariable Long userId,
                                                   @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                                   @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
-        return eventService.findEventsByUserId(userId, from, size);
+        return eventService.findEventsByInitiatorId(userId, from, size);
     }
 
     @PatchMapping
@@ -53,8 +53,8 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{eventId}/requests")
-    public ParticipationDto getInfoAboutEventParticipation(@PathVariable Long userId,
-                                                           @PathVariable Long eventId) {
+    public List<ParticipationDto> getInfoAboutEventParticipation(@PathVariable Long userId,
+                                                                 @PathVariable Long eventId) {
         return eventService.getInfoAboutEventParticipation(userId, eventId);
     }
 

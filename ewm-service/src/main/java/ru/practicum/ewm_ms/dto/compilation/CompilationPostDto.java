@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class CompilationPostDto {
     private List<Long> events;
-    private Boolean pinned;
+    private boolean pinned;
     private String title;
 }

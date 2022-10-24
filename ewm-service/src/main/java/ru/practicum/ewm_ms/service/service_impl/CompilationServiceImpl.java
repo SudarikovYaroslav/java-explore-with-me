@@ -14,12 +14,12 @@ import ru.practicum.ewm_ms.repository.CompEventsRepository;
 import ru.practicum.ewm_ms.repository.CompilationRepository;
 import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.service.CompilationService;
-import ru.practicum.ewm_ms.util.MainServiceUtil;
+import ru.practicum.ewm_ms.util.Util;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm_ms.util.MainServiceUtil.*;
+import static ru.practicum.ewm_ms.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationResponseDto findById(Long compId) {
         Compilation compilation = compilationRepo.findById(compId).orElse(null);
         if (compilation == null) {
-            throw new NotFoundException(MainServiceUtil.getCompilationNotFoundMessage(compId));
+            throw new NotFoundException(Util.getCompilationNotFoundMessage(compId));
         }
         return CompilationMapper.toResponseDto(compilation);
     }
@@ -62,14 +62,14 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void deleteEventFromCompilation(Long compId, Long eventId) {
-        cheIfCompilationExists(compId, compilationRepo);
+        checkIfCompilationExists(compId, compilationRepo);
         checkIfEventExists(eventId, eventRepo);
         compEventsRepo.deleteByCompilationIdAndEventId(compId, eventId);
     }
 
     @Override
     public void addEventToCompilation(Long compId, Long eventId) {
-        cheIfCompilationExists(compId, compilationRepo);
+        checkIfCompilationExists(compId, compilationRepo);
         checkIfEventExists(eventId, eventRepo);
         CompEvent compEvent = new CompEvent(compId, eventId);
         compEventsRepo.save(compEvent);
@@ -77,7 +77,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void unpinCompilation(Long compId) {
-        Compilation compilation = cheIfCompilationExists(compId, compilationRepo);
+        Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
         if (compilation.getPinned()) {
             compilation.setPinned(false);
             compilationRepo.save(compilation);
@@ -86,7 +86,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void pinCompilation(Long compId) {
-        Compilation compilation = cheIfCompilationExists(compId, compilationRepo);
+        Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
         if (!compilation.getPinned()) {
             compilation.setPinned(true);
             compilationRepo.save(compilation);

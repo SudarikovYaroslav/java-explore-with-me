@@ -7,14 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.dto.user.NewUserDto;
 import ru.practicum.ewm_ms.dto.user.UserDto;
-import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.mappers.UserMapper;
 import ru.practicum.ewm_ms.model.User;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.service.UserService;
-import ru.practicum.ewm_ms.util.MainServiceUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,12 +24,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findUsers(Long[] ids, Integer from, Integer size) {
+        Pageable pageable = null;
+        if (from != null && size != null) {
+            pageable = PageRequest.of(from / size, size);
+        }
+
         List<User> users;
         if (ids != null && ids.length > 0) {
-            users = getUsersListByIds(ids);
-        } else {
-            Pageable pageable = PageRequest.of(from / size, size);
+            String idsStr = machIds(ids);
+            if (pageable != null) {
+                users = userRepository.findAll(idsStr, pageable).toList();
+            } else {
+                users = userRepository.findAll(idsStr);
+            }
+            return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        }
+
+        if (pageable != null) {
             users = userRepository.findAll(pageable).toList();
+        } else {
+            users = userRepository.findAll();
         }
         return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
@@ -51,16 +62,13 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private List<User> getUsersListByIds(Long[] ids) {
-        List<User> result = new ArrayList<>();
-
-        for (Long id : ids) {
-            User user = userRepository.findById(id).orElse(null);
-            if (user == null) {
-                throw new NotFoundException(MainServiceUtil.getUserNotFoundMessage(id));
-            }
-            result.add(user);
+    private String machIds(Long[] ids) {
+        StringBuilder result = new StringBuilder();
+        for (long id : ids) {
+            result.append(id);
+            result.append(",");
         }
-        return result;
+        result.deleteCharAt(result.length() - 1);
+        return result.toString();
     }
 }

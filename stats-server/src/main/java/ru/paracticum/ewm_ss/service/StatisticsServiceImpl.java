@@ -22,7 +22,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public List<StatisticsDto> getStatistics(String start, String end, String[] uris, Boolean unique) {
+    public List<StatisticsDto> getStatistics(String start, String end, List<String> uris, Boolean unique) {
         return null;
     }
 }

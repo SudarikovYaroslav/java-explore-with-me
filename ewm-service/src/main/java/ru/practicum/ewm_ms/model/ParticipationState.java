@@ -1,7 +1,7 @@
 package ru.practicum.ewm_ms.model;
 
-public enum ApplicationState {
+public enum ParticipationState {
     PENDING,
     REJECT,
-    APPROVED
+    CONFIRMED,
 }

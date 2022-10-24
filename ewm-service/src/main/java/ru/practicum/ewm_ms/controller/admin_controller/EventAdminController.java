@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_ms.dto.event.EventDetailedDto;
 import ru.practicum.ewm_ms.dto.event.EventPostDto;
+import ru.practicum.ewm_ms.model.EventSearchParams;
 import ru.practicum.ewm_ms.service.EventService;
 
 import java.util.List;
@@ -19,14 +20,23 @@ public class EventAdminController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventDetailedDto> findEventsByConditions(@RequestParam Long[] userIds,
-                                                         @RequestParam String[] states,
-                                                         @RequestParam Integer[] categories,
+    public List<EventDetailedDto> findEventsByConditions(@RequestParam List<Long> userIds,
+                                                         @RequestParam List<String> states,
+                                                         @RequestParam List<Long> categories,
                                                          @RequestParam String rangeStart,
                                                          @RequestParam String rangeEnd,
                                                          @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                                          @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
-        return eventService.findEventsByConditions(userIds, states, categories, rangeStart, rangeEnd, from, size);
+        EventSearchParams adminParams = new EventSearchParams(
+                userIds,
+                states,
+                categories,
+                rangeStart,
+                rangeEnd,
+                from,
+                size
+        );
+        return eventService.findEventsByConditions(adminParams);
     }
 
     @PutMapping("/{eventId}")

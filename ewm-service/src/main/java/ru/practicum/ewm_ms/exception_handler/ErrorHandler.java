@@ -18,12 +18,22 @@ import java.time.LocalDateTime;
 public class ErrorHandler {
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handle(IllegalArgumentException ex) {
+        return ApiError.builder()
+                .message(ex.getMessage())
+                .reason("For the requested operation the conditions are not met.")
+                .status(Status.FORBIDDEN)
+                .build();
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handle(NotFoundException ex) {
         return ApiError.builder()
                 .message(ex.getMessage())
                 .reason("The required object was not found.")
-                .status("NOT_FOUND")
+                .status(Status.NOT_FOUND)
                 .build();
     }
 
@@ -33,7 +43,7 @@ public class ErrorHandler {
         return ApiError.builder()
                 .message(ex.getMessage())
                 .reason("For the requested operation the conditions are not met.")
-                .status("FORBIDDEN")
+                .status(Status.FORBIDDEN)
                 .timestamp(DateTimeMapper.toString(LocalDateTime.now()))
                 .build();
     }
@@ -46,7 +56,7 @@ public class ErrorHandler {
                         " nested exception is org.hibernate.exception.ConstraintViolationException: " +
                         "could not execute statement")
                 .reason("Error occurred")
-                .status("INTERNAL_SERVER_ERROR")
+                .status(Status.INTERNAL_SERVER_ERROR)
                 .timestamp(DateTimeMapper.toString(LocalDateTime.now()))
                 .build();
     }

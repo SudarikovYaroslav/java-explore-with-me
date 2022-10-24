@@ -12,7 +12,7 @@ import ru.practicum.ewm_ms.mappers.CategoryMapper;
 import ru.practicum.ewm_ms.model.Category;
 import ru.practicum.ewm_ms.repository.CategoryRepository;
 import ru.practicum.ewm_ms.service.CategoryService;
-import ru.practicum.ewm_ms.util.MainServiceUtil;
+import ru.practicum.ewm_ms.util.Util;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto findById(Long catId) {
         Category category = categoryRepository.findById(catId).orElse(null);
         if (category == null) {
-            throw new NotFoundException(MainServiceUtil.getCategoryNotFoundMessage(catId));
+            throw new NotFoundException(Util.getCategoryNotFoundMessage(catId));
         }
         return CategoryMapper.toDto(category);
     }
@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
         Category pathingCat = categoryRepository.findById(dto.getId()).orElse(null);
         if (pathingCat == null) {
-            throw new NotFoundException(MainServiceUtil.getCategoryNotFoundMessage(dto.getId()));
+            throw new NotFoundException(Util.getCategoryNotFoundMessage(dto.getId()));
         }
 
         Category newCat = CategoryMapper.toModel(dto);

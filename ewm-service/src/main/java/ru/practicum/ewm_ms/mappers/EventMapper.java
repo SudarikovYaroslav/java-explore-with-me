@@ -11,7 +11,7 @@ import ru.practicum.ewm_ms.model.PublicationState;
 import ru.practicum.ewm_ms.model.User;
 import ru.practicum.ewm_ms.repository.CategoryRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
-import ru.practicum.ewm_ms.util.MainServiceUtil;
+import ru.practicum.ewm_ms.util.Util;
 
 import java.time.LocalDateTime;
 
@@ -36,6 +36,7 @@ public class EventMapper {
                 .requestModeration(dto.getRequestModeration())
                 .state(PublicationState.PENDING)
                 .title(dto.getTitle())
+                .views(0L)
                 .build();
 
         if (event.getRequestModeration() == null) {
@@ -64,7 +65,6 @@ public class EventMapper {
                 .build();
     }
 
-    //TODO реализовать получение количества просмотров от сервиса статистики
     public static EventShortDto toEventShortDto(Event event) {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
@@ -75,11 +75,10 @@ public class EventMapper {
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-//              .views(Сервер_статистики.getViews())
+                .views(event.getViews())
                 .build();
     }
 
-    //TODO реализовать получение количества просмотров от сервиса статистики
     public static EventDetailedDto toEventDetailedDto(Event event) {
         return EventDetailedDto.builder()
                 .annotation(event.getAnnotation())
@@ -97,14 +96,14 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState().toString())
                 .title(event.getTitle())
-//              .views(Сервер_статистики.getViews())
+                .views(event.getViews())
                 .build();
     }
 
     private static Category matchCategory(Long id, CategoryRepository repo) {
         Category category = repo.findById(id).orElse(null);
         if (category == null) {
-            throw new NotFoundException(MainServiceUtil.getCategoryNotFoundMessage(id));
+            throw new NotFoundException(Util.getCategoryNotFoundMessage(id));
         }
         return category;
     }
@@ -112,7 +111,7 @@ public class EventMapper {
     private static User matchUser(Long userId, UserRepository repo) {
         User user = repo.findById(userId).orElse(null);
         if (user == null) {
-            throw new NotFoundException(MainServiceUtil.getUserNotFoundMessage(userId));
+            throw new NotFoundException(Util.getUserNotFoundMessage(userId));
         }
         return user;
     }

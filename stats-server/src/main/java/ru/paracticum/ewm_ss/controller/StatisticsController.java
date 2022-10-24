@@ -24,12 +24,11 @@ public class StatisticsController {
 
     //TODO разобраться, что метод должен вернуть в качестве ответа. Похоже, что StatisticsDto[], но не понятно,
     // какой в этом смысл - получать сразу всю статистику, если например нужна только по одному конкретному запросу
-    // *** НУЖНО ДОБАВИТЬ КОДИРОВАНИЕ ДАТЫ ПРИ ПЕРЕДАЧЕ СТАТИСТИКИ ??? Думаю попробовать Base64
-    // !!!!!!!! пока считаю, что start и end закодированы при получении и требую декодирования в сервисе
+    // *** НУЖНО ДОБАВИТЬ КОДИРОВАНИЕ ДАТЫ ПРИ ПЕРЕДАЧЕ СТАТИСТИКИ
     @GetMapping("/stats")
     public List<StatisticsDto> getStatistics(@RequestParam String start,
                                              @RequestParam String end,
-                                             @RequestParam String[] uris,
+                                             @RequestParam List<String> uris,
                                              @RequestParam Boolean unique) {
         return statisticsService.getStatistics(start, end, uris, unique);
     }

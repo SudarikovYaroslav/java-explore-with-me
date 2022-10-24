@@ -1,6 +1,17 @@
 package ru.practicum.ewm_ms.model;
 
 public enum EventSort {
-    EVENT_DATE,
-    VIEWS;
+    EVENT_DATE ("event_date"),
+    VIEWS ("views");
+
+    private final String value;
+
+    EventSort(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

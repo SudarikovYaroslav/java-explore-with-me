@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm_ms.util.MainServiceUtil.*;
+import static ru.practicum.ewm_ms.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -60,9 +60,9 @@ public class ParticipationServiceImpl implements ParticipationService {
                 .build();
 
         if (event.getRequestModeration().equals(false)) {
-            newParticipation.setState(ApplicationState.APPROVED);
+            newParticipation.setState(ParticipationState.CONFIRMED);
         } else {
-            newParticipation.setState(ApplicationState.PENDING);
+            newParticipation.setState(ParticipationState.PENDING);
         }
 
         newParticipation = participationRepo.save(newParticipation);
