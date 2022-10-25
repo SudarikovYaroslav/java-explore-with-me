@@ -1,12 +1,14 @@
 package ru.practicum.ewm_ms.controller.public_controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_ms.dto.category.CategoryDto;
 import ru.practicum.ewm_ms.service.CategoryService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/categories")
@@ -20,11 +22,13 @@ public class CategoryPublicController {
     @GetMapping
     public List<CategoryDto> findAll(@RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                      @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
+        log.info("find all categories from:{}, size:{}", from, size);
         return categoryService.findAll(from, size);
     }
 
     @GetMapping("/catId")
     public CategoryDto findById(@PathVariable Long catId) {
+        log.info("find category by id:{}", catId);
         return categoryService.findById(catId);
     }
 }

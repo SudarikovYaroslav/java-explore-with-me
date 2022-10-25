@@ -1,6 +1,7 @@
 package ru.practicum.ewm_ms.controller.admin_controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_ms.dto.event.EventDetailedDto;
 import ru.practicum.ewm_ms.dto.event.EventPostDto;
@@ -9,6 +10,7 @@ import ru.practicum.ewm_ms.service.EventService;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/events")
@@ -27,7 +29,7 @@ public class EventAdminController {
                                                          @RequestParam String rangeEnd,
                                                          @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                                          @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
-        EventSearchParams adminParams = new EventSearchParams(
+        EventSearchParams searchParams = new EventSearchParams(
                 userIds,
                 states,
                 categories,
@@ -36,22 +38,26 @@ public class EventAdminController {
                 from,
                 size
         );
-        return eventService.findEventsByConditions(adminParams);
+        log.info("find event by conditions {}", searchParams);
+        return eventService.findEventsByConditions(searchParams);
     }
 
     @PutMapping("/{eventId}")
     public EventDetailedDto editEvent(@PathVariable Long eventId,
                                       @RequestBody EventPostDto dto) {
+        log.info("edit event id:{}, {}", eventId, dto);
         return eventService.editEvent(eventId, dto);
     }
 
     @PatchMapping("/{eventId}/publish")
     public EventDetailedDto publishEvent(@PathVariable Long eventId) {
+        log.info("publish event id: {}", eventId);
         return eventService.publishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
     public EventDetailedDto rejectEvent(@PathVariable Long eventId) {
+        log.info("reject event id: {}", eventId);
         return eventService.rejectEvent(eventId);
     }
 }
