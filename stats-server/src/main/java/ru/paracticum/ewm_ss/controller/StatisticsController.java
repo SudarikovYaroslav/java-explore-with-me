@@ -9,6 +9,8 @@ import ru.paracticum.ewm_ss.model.HitSearchParams;
 import ru.paracticum.ewm_ss.service.StatsService;
 
 import javax.validation.constraints.NotBlank;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
@@ -24,14 +26,17 @@ public class StatisticsController {
         statsService.postHit(dto);
     }
 
-    // *** НУЖНО ДОБАВИТЬ КОДИРОВАНИЕ ДАТЫ ПРИ ПЕРЕДАЧЕ СТАТИСТИКИ
     @GetMapping("/stats")
     public List<HitResponseDto> getStatistics(@RequestParam @NotBlank String start,
                                               @RequestParam @NotBlank String end,
                                               @RequestParam List<String> uris,
                                               @RequestParam Boolean unique) {
         log.info("Получение статистики с параметрами start:{}, end:{}, uris:{}, unique:{}", start, end, uris, unique);
-        HitSearchParams params = new HitSearchParams(start, end, uris, unique);
+        HitSearchParams params = new HitSearchParams(
+                URLEncoder.encode(start, StandardCharsets.UTF_8),
+                URLEncoder.encode(end, StandardCharsets.UTF_8),
+                uris,
+                unique);
         return statsService.getHits(params);
     }
 }
