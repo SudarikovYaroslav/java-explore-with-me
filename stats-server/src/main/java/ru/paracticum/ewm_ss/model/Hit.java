@@ -33,4 +33,5 @@ public class Hit {
     private String ip;
     @Column(name = TIMESTAMP_COLUMN_NAME, nullable = false)
     private LocalDateTime timeStamp;
+
 }

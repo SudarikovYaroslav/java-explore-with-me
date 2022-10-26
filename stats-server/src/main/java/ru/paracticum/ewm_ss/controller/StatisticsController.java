@@ -3,10 +3,12 @@ package ru.paracticum.ewm_ss.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.paracticum.ewm_ss.dto.HitDto;
-import ru.paracticum.ewm_ss.dto.StatisticsDto;
-import ru.paracticum.ewm_ss.service.StatisticsService;
+import ru.paracticum.ewm_ss.dto.HitPostDto;
+import ru.paracticum.ewm_ss.dto.HitResponseDto;
+import ru.paracticum.ewm_ss.model.HitSearchParams;
+import ru.paracticum.ewm_ss.service.StatsService;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Slf4j
@@ -14,22 +16,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatisticsController {
 
-    private final StatisticsService statisticsService;
+    private final StatsService statsService;
 
     @PostMapping("/hit")
-    public void postHit(@RequestBody HitDto dto) {
+    public void postHit(@RequestBody HitPostDto dto) {
         log.info("Сохраняется запрос: {}", dto);
-        statisticsService.postHit(dto);
+        statsService.postHit(dto);
     }
 
-    //TODO разобраться, что метод должен вернуть в качестве ответа. Похоже, что StatisticsDto[], но не понятно,
-    // какой в этом смысл - получать сразу всю статистику, если например нужна только по одному конкретному запросу
     // *** НУЖНО ДОБАВИТЬ КОДИРОВАНИЕ ДАТЫ ПРИ ПЕРЕДАЧЕ СТАТИСТИКИ
     @GetMapping("/stats")
-    public List<StatisticsDto> getStatistics(@RequestParam String start,
-                                             @RequestParam String end,
-                                             @RequestParam List<String> uris,
-                                             @RequestParam Boolean unique) {
-        return statisticsService.getStatistics(start, end, uris, unique);
+    public List<HitResponseDto> getStatistics(@RequestParam @NotBlank String start,
+                                              @RequestParam @NotBlank String end,
+                                              @RequestParam List<String> uris,
+                                              @RequestParam Boolean unique) {
+        log.info("Получение статистики с параметрами start:{}, end:{}, uris:{}, unique:{}", start, end, uris, unique);
+        HitSearchParams params = new HitSearchParams(start, end, uris, unique);
+        return statsService.getHits(params);
     }
 }

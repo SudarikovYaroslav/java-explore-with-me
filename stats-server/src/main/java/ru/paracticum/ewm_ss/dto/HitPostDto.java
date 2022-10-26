@@ -5,14 +5,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class HitDto {
+public class HitPostDto {
     private Long id;
+    @NotBlank
     private String app;
+    @NotBlank
     private String uri;
+    @NotBlank
     private String ip;
     private String timeStamp;
 }

@@ -1,4 +1,4 @@
-package ru.paracticum.ewm_ss.model;
+package ru.paracticum.ewm_ss.dto;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Statistics {
+public class HitResponseDto {
     private String app;
     private String uri;
     private Long hits;
