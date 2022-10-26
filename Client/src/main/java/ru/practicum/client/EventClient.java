@@ -1,4 +1,4 @@
-package ru.practicum.ewm_ms.http_client;
+package ru.practicum.client;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

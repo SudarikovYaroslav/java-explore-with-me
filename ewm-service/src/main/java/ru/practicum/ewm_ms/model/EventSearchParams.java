@@ -23,40 +23,6 @@ public class EventSearchParams {
     private Integer size;
     private EventSort sort;
 
-//    public EventSearchParams(List<Long> userIds,
-//                            String text,
-//                            List<String> states,
-//                            List<Long> categories,
-//                            String rangeStart,
-//                            String rangeEnd,
-//                            Boolean paid,
-//                            Boolean onlyAvailable,
-//                            Integer from,
-//                            Integer size,
-//                            String sort) {
-//        this.userIds = userIds;
-//        if (text != null) {
-//            this.text = text.toLowerCase();
-//        }
-//        if (states != null) {
-//            this.states = Util.mapToStates(states);
-//        }
-//        this.categories = categories;
-//        if (rangeStart != null) {
-//            this.rangeStart = DateTimeMapper.toDateTime(rangeStart);
-//        }
-//        if (rangeEnd != null) {
-//            this.rangeEnd = DateTimeMapper.toDateTime(rangeEnd);
-//        }
-//        this.paid = paid;
-//        this.onlyAvailable = onlyAvailable;
-//        this.from = from;
-//        this.size = size;
-//        if (sort != null) {
-//            this.sort = Util.parseSort(sort);
-//        }
-//    }
-
     public EventSearchParams(List<Long> usersIds,
                             List<String> states,
                             List<Long> categories,
