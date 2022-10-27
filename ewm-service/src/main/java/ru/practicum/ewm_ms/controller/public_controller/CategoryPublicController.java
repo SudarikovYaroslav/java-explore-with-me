@@ -26,7 +26,7 @@ public class CategoryPublicController {
         return categoryService.findAll(from, size);
     }
 
-    @GetMapping("/catId")
+    @GetMapping("/{catId}")
     public CategoryDto findById(@PathVariable Long catId) {
         log.info("find category by id:{}", catId);
         return categoryService.findById(catId);

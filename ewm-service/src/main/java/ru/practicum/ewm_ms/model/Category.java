@@ -13,11 +13,11 @@ import javax.persistence.*;
 public class Category {
 
     public static final String ID_COLUMN_NAME = "category_id";
-    public static final String NAME_COLUMN_NAME = "name";
+    public static final String NAME_COLUMN_NAME = "category_name";
 
     @Id
     @Column(name = ID_COLUMN_NAME)
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = NAME_COLUMN_NAME)
     private String name;

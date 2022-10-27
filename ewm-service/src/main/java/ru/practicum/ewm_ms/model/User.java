@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity(name = "users")
 public class User {
     public static final int MAX_EMAIL_LENGTH = 512;
-    public static final String NAME_COLUMN_NAME = "name";
+    public static final String NAME_COLUMN_NAME = "username";
     public static final String ID_COLUMN_NAME = "user_id";
     public static final String EMAIL_COLUMN_NAME = "email";
 

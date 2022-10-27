@@ -19,7 +19,7 @@ public class Compilation {
 
     @Id
     @Column(name = ID_COLUMN_NAME)
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
