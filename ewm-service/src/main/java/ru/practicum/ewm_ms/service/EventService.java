@@ -5,7 +5,6 @@ import ru.practicum.ewm_ms.dto.event.EventDetailedDto;
 import ru.practicum.ewm_ms.dto.event.EventPatchDto;
 import ru.practicum.ewm_ms.dto.event.EventPostDto;
 import ru.practicum.ewm_ms.dto.event.EventShortDto;
-import ru.practicum.ewm_ms.model.EventAdminParams;
 import ru.practicum.ewm_ms.model.EventSearchParams;
 
 import java.util.List;

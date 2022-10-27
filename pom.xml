@@ -5,8 +5,8 @@
 	<modules>
 		<module>ewm-service</module>
 		<module>stats-server</module>
-        <module>Client</module>
-    </modules>
+		<module>client</module>
+	</modules>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
