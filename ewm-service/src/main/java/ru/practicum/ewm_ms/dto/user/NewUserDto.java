@@ -18,4 +18,12 @@ public class NewUserDto {
     private String email;
     @NotBlank
     private String name;
+
+    @Override
+    public String toString() {
+        return "NewUserDto{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

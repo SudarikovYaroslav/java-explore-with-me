@@ -18,4 +18,18 @@ public class EventPatchDto {
     private Boolean paid;
     private Integer participantLimit;
     private String title;
+
+    @Override
+    public String toString() {
+        return "EventPatchDto{" +
+                "annotation='" + annotation + '\'' +
+                ", category=" + category +
+                ", description='" + description + '\'' +
+                ", eventDate='" + eventDate + '\'' +
+                ", id=" + id +
+                ", paid=" + paid +
+                ", participantLimit=" + participantLimit +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

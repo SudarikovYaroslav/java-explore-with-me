@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.client.EventClient;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.dto.event.EventDetailedDto;
@@ -34,6 +35,7 @@ import static ru.practicum.ewm_ms.util.EventServiceUtil.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
 
     private final ParticipationRepository participationRepo;
@@ -43,6 +45,7 @@ public class EventServiceImpl implements EventService {
     private final EventClient client;
 
     @Override
+    @Transactional
     public List<EventShortDto> getEvents(EventSearchParams params, String clientIp, String endpoint) {
         Sort sort = Sort.by(params.getSort().toString());
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize(), sort);
@@ -54,6 +57,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDetailedDto findEventById(Long id, String clientIp, String endpoint) {
         Event event = eventRepo.findById(id).orElse(null);
         if (event == null) {
@@ -72,6 +76,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDetailedDto patchEvent(Long userId, EventPatchDto dto) {
         Util.checkIfUserExists(userId, userRepo);
         Event event = Util.checkIfEventExists(dto.getId(), eventRepo);
@@ -89,6 +94,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDetailedDto postEvent(Long userId, EventPostDto dto) {
         if (isEventDateOk(dto.getEventDate())) {
             throw new ForbiddenException("the event cannot be earlier than 2 hours from the current time");
@@ -108,6 +114,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDetailedDto cancelEventByIdAndOwnerId(Long userId, Long eventId) {
         Event event = eventRepo.findByIdAndInitiatorId(eventId, userId).orElse(null);
         if (event == null) {
@@ -133,6 +140,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public ParticipationDto confirmParticipation(Long userId, Long eventId, Long reqId) {
         Event event = eventRepo.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
@@ -159,6 +167,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public ParticipationDto rejectParticipation(Long userId, Long eventId, Long reqId) {
         eventRepo.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
@@ -184,6 +193,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDetailedDto editEvent(Long eventId, EventPostDto dto) {
         Event editable = eventRepo.findById(eventId)
                 .orElseThrow(()-> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
@@ -220,6 +230,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDetailedDto publishEvent(Long eventId) {
         Event event = eventRepo.findById(eventId)
                 .orElseThrow(()-> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
@@ -237,6 +248,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public EventDetailedDto rejectEvent(Long eventId) {
         Event event = eventRepo.findById(eventId)
                 .orElseThrow(()-> new ForbiddenException(Util.getEventNotFoundMessage(eventId)));

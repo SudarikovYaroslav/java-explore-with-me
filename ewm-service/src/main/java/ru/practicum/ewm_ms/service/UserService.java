@@ -6,7 +6,7 @@ import ru.practicum.ewm_ms.dto.user.UserDto;
 import java.util.List;
 
 public interface UserService {
-    List<UserDto> findUsers(Long[]ids, Integer from, Integer size);
+    List<UserDto> findUsers(List<Long> ids, Integer from, Integer size);
 
     UserDto postUser(NewUserDto dto);
 

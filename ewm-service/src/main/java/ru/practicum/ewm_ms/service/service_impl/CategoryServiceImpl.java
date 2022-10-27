@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.dto.category.CategoryDto;
 import ru.practicum.ewm_ms.dto.category.CategoryPostDto;
 import ru.practicum.ewm_ms.exception.ForbiddenException;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -40,6 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto patchCategory(CategoryDto dto) {
         Category category = categoryRepository.findByName(dto.getName()).orElse(null);
         if (category != null) {
@@ -56,6 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryDto addNewCategory(CategoryPostDto dto) {
         Category newCat = CategoryMapper.toModel(dto);
         newCat = categoryRepository.save(newCat);

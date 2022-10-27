@@ -1,6 +1,7 @@
 package ru.practicum.ewm_ms.service.service_impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,27 +24,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<UserDto> findUsers(Long[] ids, Integer from, Integer size) {
-        Pageable pageable = null;
-        if (from != null && size != null) {
-            pageable = PageRequest.of(from / size, size);
-        }
-
+    public List<UserDto> findUsers(List<Long> ids, Integer from, Integer size) {
         List<User> users;
-        if (ids != null && ids.length > 0) {
-            String idsStr = machIds(ids);
-            if (pageable != null) {
-                users = userRepository.findAll(idsStr, pageable).toList();
-            } else {
-                users = userRepository.findAll(idsStr);
-            }
-            return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
-        }
 
-        if (pageable != null) {
-            users = userRepository.findAll(pageable).toList();
+        if (ids != null) {
+            users = userRepository.findAllById(ids);
         } else {
-            users = userRepository.findAll();
+            Pageable pageable = PageRequest.of(from / size, size);
+            users = userRepository.findAll(pageable).toList();
         }
         return users.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
@@ -62,7 +50,7 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    private String machIds(Long[] ids) {
+    private String machIds(List<Long> ids) {
         StringBuilder result = new StringBuilder();
         for (long id : ids) {
             result.append(id);

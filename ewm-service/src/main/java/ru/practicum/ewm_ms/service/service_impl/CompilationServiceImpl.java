@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.dto.compilation.CompilationPostDto;
 import ru.practicum.ewm_ms.dto.compilation.CompilationResponseDto;
 import ru.practicum.ewm_ms.exception.NotFoundException;
@@ -23,6 +24,7 @@ import static ru.practicum.ewm_ms.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
 
     private final CompilationRepository compilationRepo;
@@ -49,6 +51,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public CompilationResponseDto addNewCompilation(CompilationPostDto dto) {
         Compilation compilation = CompilationMapper.toModel(dto, eventRepo);
         compilation = compilationRepo.save(compilation);
@@ -56,11 +59,13 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void deleteCompilation(Long compId) {
         compilationRepo.deleteById(compId);
     }
 
     @Override
+    @Transactional
     public void deleteEventFromCompilation(Long compId, Long eventId) {
         checkIfCompilationExists(compId, compilationRepo);
         checkIfEventExists(eventId, eventRepo);
@@ -68,6 +73,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void addEventToCompilation(Long compId, Long eventId) {
         checkIfCompilationExists(compId, compilationRepo);
         checkIfEventExists(eventId, eventRepo);
@@ -76,6 +82,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void unpinCompilation(Long compId) {
         Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
         if (compilation.getPinned()) {
@@ -85,6 +92,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional
     public void pinCompilation(Long compId) {
         Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
         if (!compilation.getPinned()) {

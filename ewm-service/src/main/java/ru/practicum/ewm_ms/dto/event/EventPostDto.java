@@ -29,4 +29,19 @@ public class EventPostDto {
     private Boolean requestModeration;
     @Length(min = MIN_TITLE_LEN, max = MAX_TITLE_LEN)
     private String title;
+
+    @Override
+    public String toString() {
+        return "EventPostDto{" +
+                "annotation='" + annotation + '\'' +
+                ", category=" + category +
+                ", description='" + description + '\'' +
+                ", eventDate='" + eventDate + '\'' +
+                ", location=" + location +
+                ", paid=" + paid +
+                ", participantLimit=" + participantLimit +
+                ", requestModeration=" + requestModeration +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

@@ -2,6 +2,7 @@ package ru.practicum.ewm_ms.service.service_impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.exception.ForbiddenException;
 import ru.practicum.ewm_ms.mappers.ParticipationMapper;
@@ -19,6 +20,7 @@ import static ru.practicum.ewm_ms.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ParticipationServiceImpl implements ParticipationService {
 
     private final ParticipationRepository participationRepo;
@@ -33,6 +35,7 @@ public class ParticipationServiceImpl implements ParticipationService {
     }
 
     @Override
+    @Transactional
     public ParticipationDto addParticipationQuery(Long userId, Long eventId) {
         User user = checkIfUserExists(userId, userRepo);
         Event event = checkIfEventExists(eventId, eventRepo);
@@ -70,6 +73,7 @@ public class ParticipationServiceImpl implements ParticipationService {
     }
 
     @Override
+    @Transactional
     public ParticipationDto cancelParticipation(Long userId, Long requestId) {
         checkIfUserExists(userId, userRepo);
         Participation participation = checkIfParticipationRequestExists(requestId, participationRepo);
