@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_ms.dto.category.CategoryDto;
 import ru.practicum.ewm_ms.service.CategoryService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -20,14 +21,17 @@ public class CategoryPublicController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDto> findAll(@RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+    public List<CategoryDto> findAll(@Positive
+                                     @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+                                     @Positive
                                      @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
         log.info("find all categories from:{}, size:{}", from, size);
         return categoryService.findAll(from, size);
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto findById(@PathVariable Long catId) {
+    public CategoryDto findById(@Positive
+                                @PathVariable Long catId) {
         log.info("find category by id:{}", catId);
         return categoryService.findById(catId);
     }

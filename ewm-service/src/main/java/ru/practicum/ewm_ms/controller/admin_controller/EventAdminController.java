@@ -8,6 +8,7 @@ import ru.practicum.ewm_ms.dto.event.EventPostDto;
 import ru.practicum.ewm_ms.model.EventSearchParams;
 import ru.practicum.ewm_ms.service.EventService;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -43,20 +44,23 @@ public class EventAdminController {
     }
 
     @PutMapping("/{eventId}")
-    public EventDetailedDto editEvent(@PathVariable Long eventId,
+    public EventDetailedDto editEvent(@Positive
+                                      @PathVariable Long eventId,
                                       @RequestBody EventPostDto dto) {
         log.info("edit event id:{}, {}", eventId, dto);
         return eventService.editEvent(eventId, dto);
     }
 
     @PatchMapping("/{eventId}/publish")
-    public EventDetailedDto publishEvent(@PathVariable Long eventId) {
+    public EventDetailedDto publishEvent(@Positive
+                                         @PathVariable Long eventId) {
         log.info("publish event id: {}", eventId);
         return eventService.publishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
-    public EventDetailedDto rejectEvent(@PathVariable Long eventId) {
+    public EventDetailedDto rejectEvent(@Positive
+                                        @PathVariable Long eventId) {
         log.info("reject event id: {}", eventId);
         return eventService.rejectEvent(eventId);
     }

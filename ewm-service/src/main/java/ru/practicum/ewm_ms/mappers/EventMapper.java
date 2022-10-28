@@ -51,7 +51,7 @@ public class EventMapper {
                 .createdOn(null)
                 .description(dto.getDescription())
                 .eventDate(DateTimeMapper.toDateTime(dto.getEventDate()))
-                .id(dto.getId())
+                .id(dto.getEventId())
                 .initiator(null)
                 .location(null)
                 .paid(dto.getPaid())

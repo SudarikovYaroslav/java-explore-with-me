@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import ru.practicum.ewm_ms.util.CommonValidMarker;
 
 import javax.validation.constraints.Email;
 
@@ -12,7 +13,7 @@ import javax.validation.constraints.Email;
 @Builder
 @AllArgsConstructor
 public class UserDto {
-    @Email
+    @Email(groups = CommonValidMarker.class)
     private String email;
     private Long id;
     private String name;

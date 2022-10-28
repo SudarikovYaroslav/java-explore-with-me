@@ -9,6 +9,7 @@ import ru.practicum.ewm_ms.model.EventSearchParams;
 import ru.practicum.ewm_ms.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -16,6 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/events")
 public class EventPublicController {
+
+    public static final String DEFAULT_FROM = "0";
+    public static final String DEFAULT_SIZE = "10";
 
     private final EventService eventService;
 
@@ -27,8 +31,10 @@ public class EventPublicController {
                                          @RequestParam String rangeEnd,
                                          @RequestParam Boolean onlyAvailable,
                                          @RequestParam String sort,
-                                         @RequestParam Integer from,
-                                         @RequestParam Integer size,
+                                         @Positive
+                                         @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+                                         @Positive
+                                         @RequestParam(defaultValue = DEFAULT_SIZE) Integer size,
                                          HttpServletRequest request) {
         String clientIp = request.getRemoteAddr();
         String endpoint = request.getRequestURI();
@@ -49,7 +55,8 @@ public class EventPublicController {
     }
 
     @GetMapping("/{id}")
-    public EventDetailedDto findEventById(@PathVariable Long id,
+    public EventDetailedDto findEventById(@Positive
+                                          @PathVariable Long id,
                                           HttpServletRequest request)  {
         String clientIp = request.getRemoteAddr();
         String endpoint = request.getRequestURI();

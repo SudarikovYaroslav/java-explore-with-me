@@ -22,8 +22,10 @@ public class UserAdminController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> findUsers(@RequestParam @Positive List<Long> ids,
+    public List<UserDto> findUsers(@RequestParam List<Long> ids,
+                                   @Positive
                                    @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+                                   @Positive
                                    @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
         log.info("Searching Users ids: {}", ids);
         return userService.findUsers(ids, from, size);

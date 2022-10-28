@@ -7,6 +7,8 @@ import ru.practicum.ewm_ms.dto.compilation.CompilationPostDto;
 import ru.practicum.ewm_ms.dto.compilation.CompilationResponseDto;
 import ru.practicum.ewm_ms.service.CompilationService;
 
+import javax.validation.constraints.Positive;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -22,33 +24,40 @@ public class CompilationAdminController {
     }
 
     @DeleteMapping("/{compId}")
-    public void deleteCompilation(@PathVariable Long compId) {
+    public void deleteCompilation(@Positive
+                                  @PathVariable Long compId) {
         log.info("delete compilation id: {}", compId);
         compilationService.deleteCompilation(compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
-    public void deleteEventFromCompilation(@PathVariable Long compId,
+    public void deleteEventFromCompilation(@Positive
+                                           @PathVariable Long compId,
+                                           @Positive
                                            @PathVariable Long eventId) {
         log.info("delete event id:{} from compilation id:{}", eventId, compId);
         compilationService.deleteEventFromCompilation(compId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
-    public void addEventToCompilation(@PathVariable Long compId,
+    public void addEventToCompilation(@Positive
+                                      @PathVariable Long compId,
+                                      @Positive
                                       @PathVariable Long eventId) {
         log.info("add event id:{} to compilation id:{}", eventId, compId);
         compilationService.addEventToCompilation(compId, eventId);
     }
 
     @DeleteMapping("/{compId}/pin")
-    public void unpinCompilation(@PathVariable Long compId) {
+    public void unpinCompilation(@Positive
+                                 @PathVariable Long compId) {
         log.info("unpin compilation id: {}", compId);
         compilationService.unpinCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")
-    public void pinCompilation(@PathVariable Long compId) {
+    public void pinCompilation(@Positive
+                               @PathVariable Long compId) {
         log.info("pin compilation id: {}", compId);
         compilationService.pinCompilation(compId);
     }

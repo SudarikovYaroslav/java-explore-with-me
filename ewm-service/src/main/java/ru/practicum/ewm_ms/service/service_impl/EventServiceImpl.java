@@ -77,7 +77,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventDetailedDto patchEvent(Long userId, EventPatchDto dto) {
         Util.checkIfUserExists(userId, userRepo);
-        Event event = Util.checkIfEventExists(dto.getId(), eventRepo);
+        Event event = Util.checkIfEventExists(dto.getEventId(), eventRepo);
 
         if (event.getState().equals(PublicationState.PUBLISHED)) {
             throw new ForbiddenException("Only pending or canceled events can be changed");
