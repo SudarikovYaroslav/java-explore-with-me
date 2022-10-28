@@ -84,7 +84,7 @@ public class EventServiceImpl implements EventService {
         }
 
         updateEvent(event, dto, categoryRepo);
-        if (event.getState().equals(PublicationState.CANCEL)) {
+        if (event.getState().equals(PublicationState.CANCELED)) {
             event.setState(PublicationState.PENDING);
         }
         event = eventRepo.save(event);
@@ -124,7 +124,7 @@ public class EventServiceImpl implements EventService {
             throw new ForbiddenException("the event can only be canceled in the waiting state, current state: "
                     + event.getState());
         }
-        event.setState(PublicationState.CANCEL);
+        event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
         return EventMapper.toEventDetailedDto(event);
     }
@@ -175,10 +175,10 @@ public class EventServiceImpl implements EventService {
         Participation participation = participationRepo.findById(reqId)
                 .orElseThrow(()-> new NotFoundException(Util.getParticipationNotFoundMessage(reqId)));
 
-        if (participation.getState().equals(ParticipationState.REJECT)) {
+        if (participation.getState().equals(ParticipationState.REJECTED)) {
             throw new ForbiddenException("request for participation has already been rejected");
         }
-        participation.setState(ParticipationState.REJECT);
+        participation.setState(ParticipationState.REJECTED);
         participation = participationRepo.save(participation);
         return ParticipationMapper.toDto(participation);
     }
@@ -255,7 +255,7 @@ public class EventServiceImpl implements EventService {
         if (event.getState().equals(PublicationState.PUBLISHED)) {
             throw new ForbiddenException("not possible to reject a published event");
         }
-        event.setState(PublicationState.REJECTED);
+        event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
         return EventMapper.toEventDetailedDto(event);
     }

@@ -125,7 +125,7 @@ public class EventServiceUtil {
                     .findAllByEventIdAndState(event.getId(), ParticipationState.PENDING);
 
             for (Participation par : participations) {
-                par.setState(ParticipationState.REJECT);
+                par.setState(ParticipationState.REJECTED);
                 participationRepo.save(par);
             }
         }

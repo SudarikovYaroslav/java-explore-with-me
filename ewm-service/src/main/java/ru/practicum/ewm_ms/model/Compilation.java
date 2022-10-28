@@ -21,7 +21,7 @@ public class Compilation {
     @Column(name = ID_COLUMN_NAME)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "compilation_events",
             joinColumns = {@JoinColumn(name = "compilation_id")},

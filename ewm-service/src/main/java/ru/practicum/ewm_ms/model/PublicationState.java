@@ -3,6 +3,6 @@ package ru.practicum.ewm_ms.model;
 public enum PublicationState {
     PUBLISHED,
     PENDING,
-    CANCEL,
-    REJECTED
+    CANCELED,
+//    REJECTED
 }
