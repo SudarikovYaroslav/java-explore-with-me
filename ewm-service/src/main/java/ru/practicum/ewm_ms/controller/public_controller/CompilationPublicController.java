@@ -8,6 +8,7 @@ import ru.practicum.ewm_ms.service.CompilationService;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -24,7 +25,9 @@ public class CompilationPublicController {
     @GetMapping
     public List<CompilationResponseDto> findAll(@NotNull
                                                 @RequestParam Boolean pinned,
+                                                @PositiveOrZero
                                                 @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+                                                @Positive
                                                 @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
         log.info("find all compilations from:{}, size:{}", from, size);
         return compilationService.findAll(pinned, from, size) ;

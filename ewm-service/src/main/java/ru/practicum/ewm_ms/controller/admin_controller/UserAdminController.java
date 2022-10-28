@@ -8,6 +8,7 @@ import ru.practicum.ewm_ms.dto.user.UserDto;
 import ru.practicum.ewm_ms.service.UserService;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -23,7 +24,7 @@ public class UserAdminController {
 
     @GetMapping
     public List<UserDto> findUsers(@RequestParam List<Long> ids,
-                                   @Positive
+                                   @PositiveOrZero
                                    @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                    @Positive
                                    @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {

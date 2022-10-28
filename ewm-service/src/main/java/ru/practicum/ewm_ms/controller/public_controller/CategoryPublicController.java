@@ -7,6 +7,7 @@ import ru.practicum.ewm_ms.dto.category.CategoryDto;
 import ru.practicum.ewm_ms.service.CategoryService;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -21,7 +22,7 @@ public class CategoryPublicController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDto> findAll(@Positive
+    public List<CategoryDto> findAll(@PositiveOrZero
                                      @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                      @Positive
                                      @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {

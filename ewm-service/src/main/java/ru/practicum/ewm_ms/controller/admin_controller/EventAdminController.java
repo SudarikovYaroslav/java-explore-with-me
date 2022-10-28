@@ -9,6 +9,7 @@ import ru.practicum.ewm_ms.model.EventSearchParams;
 import ru.practicum.ewm_ms.service.EventService;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -28,7 +29,9 @@ public class EventAdminController {
                                                          @RequestParam List<Long> categories,
                                                          @RequestParam String rangeStart,
                                                          @RequestParam String rangeEnd,
+                                                         @PositiveOrZero
                                                          @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+                                                         @Positive
                                                          @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
         EventSearchParams searchParams = new EventSearchParams(
                 userIds,

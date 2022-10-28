@@ -10,6 +10,7 @@ import ru.practicum.ewm_ms.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +32,7 @@ public class EventPublicController {
                                          @RequestParam String rangeEnd,
                                          @RequestParam Boolean onlyAvailable,
                                          @RequestParam String sort,
-                                         @Positive
+                                         @PositiveOrZero
                                          @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                          @Positive
                                          @RequestParam(defaultValue = DEFAULT_SIZE) Integer size,

@@ -13,6 +13,7 @@ import ru.practicum.ewm_ms.service.EventService;
 import ru.practicum.ewm_ms.util.PatchValidMarker;
 
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -30,7 +31,7 @@ public class EventPrivateController {
     @GetMapping
     public List<EventShortDto> findEventsByUserId(@Positive
                                                   @PathVariable Long userId,
-                                                  @Positive
+                                                  @PositiveOrZero
                                                   @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                                   @Positive
                                                   @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
