@@ -20,10 +20,7 @@ import ru.practicum.ewm_ms.mappers.DateTimeMapper;
 import ru.practicum.ewm_ms.mappers.EventMapper;
 import ru.practicum.ewm_ms.mappers.ParticipationMapper;
 import ru.practicum.ewm_ms.model.*;
-import ru.practicum.ewm_ms.repository.CategoryRepository;
-import ru.practicum.ewm_ms.repository.EventRepository;
-import ru.practicum.ewm_ms.repository.ParticipationRepository;
-import ru.practicum.ewm_ms.repository.UserRepository;
+import ru.practicum.ewm_ms.repository.*;
 import ru.practicum.ewm_ms.service.EventService;
 import ru.practicum.ewm_ms.util.Util;
 
@@ -39,6 +36,7 @@ import static ru.practicum.ewm_ms.util.EventServiceUtil.*;
 public class EventServiceImpl implements EventService {
 
     private final ParticipationRepository participationRepo;
+    private final LocationRepository locationRepository;
     private final CategoryRepository categoryRepo;
     private final EventRepository eventRepo;
     private final UserRepository userRepo;
@@ -96,10 +94,12 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDetailedDto postEvent(Long userId, EventPostDto dto) {
-        if (isEventDateOk(dto.getEventDate())) {
+        if (!isEventDateOk(dto.getEventDate())) {
             throw new ForbiddenException("the event cannot be earlier than 2 hours from the current time");
         }
         Event event = EventMapper.toModel(dto, userId, categoryRepo, userRepo);
+        Location location = locationRepository.save(event.getLocation());
+        event.setLocation(location);
         event = eventRepo.save(event);
         return EventMapper.toEventDetailedDto(event);
     }

@@ -49,14 +49,4 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
-
-    private String machIds(List<Long> ids) {
-        StringBuilder result = new StringBuilder();
-        for (long id : ids) {
-            result.append(id);
-            result.append(",");
-        }
-        result.deleteCharAt(result.length() - 1);
-        return result.toString();
-    }
 }

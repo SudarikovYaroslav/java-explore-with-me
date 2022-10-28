@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS events
     location_id        BIGINT REFERENCES locations (location_id),
     paid               boolean                                                   NOT NULL,
     participant_limit  int                                                       NOT NULL,
-    published_on       TIMESTAMP WITHOUT TIME ZONE                               NOT NULL,
+    published_on       TIMESTAMP WITHOUT TIME ZONE                                       ,
     request_moderation boolean                                                   NOT NULL,
-    state              varchar(125)                                               NOT NULL,
+    state              varchar(125)                                              NOT NULL,
     title              VARCHAR(120)                                              NOT NULL,
     views              BIGINT,
     PRIMARY KEY (event_id)

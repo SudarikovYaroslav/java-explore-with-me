@@ -39,9 +39,7 @@ public class EventMapper {
                 .views(0L)
                 .build();
 
-        if (event.getRequestModeration() == null) {
-            event.setRequestModeration(true);
-        }
+        event.setRequestModeration(event.getRequestModeration() == null || event.getRequestModeration());
         return event;
     }
 
@@ -80,7 +78,7 @@ public class EventMapper {
     }
 
     public static EventDetailedDto toEventDetailedDto(Event event) {
-        return EventDetailedDto.builder()
+        EventDetailedDto dto = EventDetailedDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
                 .confirmedRequests(event.getConfirmedRequests())
@@ -92,12 +90,16 @@ public class EventMapper {
                 .location(event.getLocation())
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
-                .publishedOn(DateTimeMapper.toString(event.getPublishedOn()))
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState().toString())
                 .title(event.getTitle())
                 .views(event.getViews())
                 .build();
+
+        if (event.getPublishedOn() != null) {
+            dto.setPublishedOn(DateTimeMapper.toString(event.getPublishedOn()));
+        }
+        return dto;
     }
 
     private static Category matchCategory(Long id, CategoryRepository repo) {
