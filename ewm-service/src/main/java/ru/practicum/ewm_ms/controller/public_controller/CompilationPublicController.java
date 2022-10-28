@@ -23,8 +23,7 @@ public class CompilationPublicController {
     private final CompilationService compilationService;
 
     @GetMapping
-    public List<CompilationResponseDto> findAll(@NotNull
-                                                @RequestParam Boolean pinned,
+    public List<CompilationResponseDto> findAll(@RequestParam Boolean pinned,
                                                 @PositiveOrZero
                                                 @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                                 @Positive

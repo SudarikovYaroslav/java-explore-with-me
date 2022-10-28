@@ -34,7 +34,12 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public List<CompilationResponseDto> findAll(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        List<Compilation> compilations = compilationRepo.findAllByPinned(pinned, pageable);
+        List<Compilation> compilations;
+        if (pinned != null) {
+            compilations = compilationRepo.findAllByPinned(pinned, pageable);
+        } else {
+            compilations = compilationRepo.findAll(pageable).toList();
+        }
         return compilations
                 .stream()
                 .map(CompilationMapper::toResponseDto)

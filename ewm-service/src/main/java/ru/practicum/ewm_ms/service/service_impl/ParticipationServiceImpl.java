@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.exception.ForbiddenException;
+import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.mappers.ParticipationMapper;
 import ru.practicum.ewm_ms.model.*;
 import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.ParticipationRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.service.ParticipationService;
+import ru.practicum.ewm_ms.util.Util;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -76,8 +78,12 @@ public class ParticipationServiceImpl implements ParticipationService {
     @Transactional
     public ParticipationDto cancelParticipation(Long userId, Long requestId) {
         checkIfUserExists(userId, userRepo);
-        Participation participation = checkIfParticipationRequestExists(requestId, participationRepo);
-        participationRepo.deleteById(requestId);
+        Participation participation = participationRepo
+                .findById(requestId).orElseThrow(()-> new NotFoundException(
+                        Util.getParticipationNotFoundMessage(requestId))
+                );
+        participation.setState(ParticipationState.CANCELED);
+        participation = participationRepo.save(participation);
         return ParticipationMapper.toDto(participation);
     }
 }
