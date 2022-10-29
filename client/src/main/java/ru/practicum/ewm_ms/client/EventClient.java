@@ -19,7 +19,7 @@ public class EventClient {
     public static final String API_HIT_PREFIX = "/hit";
     public static final String APP_NAME = "ewm-service";
     public static final String API_STATS_PREFIX = "/stats";
-    public static final String BASE_PATH = "http://localhost:9090";
+    public static final String BASE_PATH = "http://stats-server:9090";
 
     private final RestTemplate hitRest;
     private final RestTemplate statsRest;

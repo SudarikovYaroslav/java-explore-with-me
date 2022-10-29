@@ -152,7 +152,7 @@ public class EventServiceImpl implements EventService {
         }
 
         Participation participation = participationRepo.findById(reqId)
-                .orElseThrow(()-> new NotFoundException(Util.getParticipationNotFoundMessage(reqId)));
+                .orElseThrow(() -> new NotFoundException(Util.getParticipationNotFoundMessage(reqId)));
 
         if (participation.getState().equals(ParticipationState.CONFIRMED)) {
            throw new  ForbiddenException("the request for participation has already been confirmed");
@@ -172,7 +172,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
 
         Participation participation = participationRepo.findById(reqId)
-                .orElseThrow(()-> new NotFoundException(Util.getParticipationNotFoundMessage(reqId)));
+                .orElseThrow(() -> new NotFoundException(Util.getParticipationNotFoundMessage(reqId)));
 
         if (participation.getState().equals(ParticipationState.REJECTED)) {
             throw new ForbiddenException("request for participation has already been rejected");
@@ -194,7 +194,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventDetailedDto editEvent(Long eventId, EventPostDto dto) {
         Event editable = eventRepo.findById(eventId)
-                .orElseThrow(()-> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
+                .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
 
         if (dto.getAnnotation() != null) {
             editable.setAnnotation(dto.getAnnotation());
@@ -231,7 +231,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventDetailedDto publishEvent(Long eventId) {
         Event event = eventRepo.findById(eventId)
-                .orElseThrow(()-> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
+                .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
 
         if (!event.getState().equals(PublicationState.PENDING)) {
             throw new ForbiddenException("event must be in the publication waiting state");
@@ -249,7 +249,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventDetailedDto rejectEvent(Long eventId) {
         Event event = eventRepo.findById(eventId)
-                .orElseThrow(()-> new ForbiddenException(Util.getEventNotFoundMessage(eventId)));
+                .orElseThrow(() -> new ForbiddenException(Util.getEventNotFoundMessage(eventId)));
         if (event.getState().equals(PublicationState.PUBLISHED)) {
             throw new ForbiddenException("not possible to reject a published event");
         }

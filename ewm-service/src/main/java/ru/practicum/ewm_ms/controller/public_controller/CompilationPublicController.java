@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_ms.dto.compilation.CompilationResponseDto;
 import ru.practicum.ewm_ms.service.CompilationService;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -29,7 +28,7 @@ public class CompilationPublicController {
                                                 @Positive
                                                 @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
         log.info("find all compilations from:{}, size:{}", from, size);
-        return compilationService.findAll(pinned, from, size) ;
+        return compilationService.findAll(pinned, from, size);
     }
 
     @GetMapping("/{compId}")

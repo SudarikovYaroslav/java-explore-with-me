@@ -9,11 +9,12 @@ import java.time.LocalDateTime;
 
 public class HitMapper {
 
-    private HitMapper() {}
+    private HitMapper() {
+    }
 
     public static Hit toModel(HitPostDto dto) {
         Hit hit = Hit.builder()
-                .hit_id(dto.getId())
+                .hitId(dto.getId())
                 .app(dto.getApp())
                 .uri(dto.getUri())
                 .ip(dto.getIp())

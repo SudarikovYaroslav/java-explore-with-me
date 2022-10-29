@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm_ms.util.Util.*;
+import static ru.practicum.ewm_ms.util.Util.checkIfEventExists;
+import static ru.practicum.ewm_ms.util.Util.checkIfUserExists;
 
 @Service
 @RequiredArgsConstructor
@@ -79,7 +80,7 @@ public class ParticipationServiceImpl implements ParticipationService {
     public ParticipationDto cancelParticipation(Long userId, Long requestId) {
         checkIfUserExists(userId, userRepo);
         Participation participation = participationRepo
-                .findById(requestId).orElseThrow(()-> new NotFoundException(
+                .findById(requestId).orElseThrow(() -> new NotFoundException(
                         Util.getParticipationNotFoundMessage(requestId))
                 );
         participation.setState(ParticipationState.CANCELED);

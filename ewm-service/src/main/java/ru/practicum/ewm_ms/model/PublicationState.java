@@ -4,5 +4,4 @@ public enum PublicationState {
     PUBLISHED,
     PENDING,
     CANCELED,
-//    REJECTED
 }

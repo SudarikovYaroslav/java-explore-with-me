@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 
 public class EventMapper {
 
-    private EventMapper() {}
+    private EventMapper() {
+    }
 
     public static Event toModel(EventPostDto dto, Long initiator, CategoryRepository catRepo, UserRepository userRepo) {
         Event event = Event.builder()

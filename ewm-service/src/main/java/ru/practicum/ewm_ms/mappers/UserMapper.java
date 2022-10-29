@@ -5,12 +5,10 @@ import ru.practicum.ewm_ms.dto.user.UserDto;
 import ru.practicum.ewm_ms.dto.user.UserShortDto;
 import ru.practicum.ewm_ms.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserMapper {
 
-    private UserMapper() {}
+    private UserMapper() {
+    }
 
     public static User toModel(NewUserDto dto) {
         return User.builder()
@@ -33,13 +31,5 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .build();
-    }
-
-    public static List<UserDto> toUserDtoList(List<User> users) {
-        List<UserDto> result = new ArrayList<>();
-        for (User u : users) {
-            result.add(toUserDto(u));
-        }
-        return result;
     }
 }

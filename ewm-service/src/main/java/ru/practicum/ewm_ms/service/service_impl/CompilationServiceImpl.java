@@ -20,7 +20,8 @@ import ru.practicum.ewm_ms.util.Util;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm_ms.util.Util.*;
+import static ru.practicum.ewm_ms.util.Util.checkIfCompilationExists;
+import static ru.practicum.ewm_ms.util.Util.checkIfEventExists;
 
 @Service
 @RequiredArgsConstructor

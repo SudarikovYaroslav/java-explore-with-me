@@ -30,8 +30,7 @@ public class StatsServiceImpl implements StatsService {
     public List<HitResponseDto> getHits(HitSearchParams params) {
         Specification<Hit> specification = getSpecification(params);
         List<Hit> hits = hitRepo.findAll(specification);
-        List<HitResponseDto> dtos = hits.stream().map((hit -> HitMapper.toDto(hit, hitRepo))).collect(Collectors.toList());
-        return dtos;
+        return hits.stream().map((hit -> HitMapper.toDto(hit, hitRepo))).collect(Collectors.toList());
     }
 
     private Specification<Hit> getSpecification(HitSearchParams params) {
@@ -49,7 +48,7 @@ public class StatsServiceImpl implements StatsService {
                     predicates.add(criteriaBuilder.equal(root.get("uri"), uri));
                 }
             }
-            if (null != params.getUnique()){
+            if (null != params.getUnique()) {
                 query.distinct(true);
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

@@ -10,7 +10,7 @@ import ru.practicum.ewm_ms.model.EventSearchParams;
 import java.util.List;
 
 public interface EventService {
-    List<EventShortDto> getEvents(EventSearchParams criteria, String clientIp, String endpoint) ;
+    List<EventShortDto> getEvents(EventSearchParams criteria, String clientIp, String endpoint);
 
     EventDetailedDto findEventById(Long id, String clientIp, String endpoint);
 

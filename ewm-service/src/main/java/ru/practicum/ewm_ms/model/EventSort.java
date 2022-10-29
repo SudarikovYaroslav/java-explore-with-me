@@ -1,8 +1,8 @@
 package ru.practicum.ewm_ms.model;
 
 public enum EventSort {
-    EVENT_DATE ("eventDate"),
-    VIEWS ("views");
+    EVENT_DATE("eventDate"),
+    VIEWS("views");
 
     private final String value;
 

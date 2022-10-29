@@ -3,7 +3,6 @@ package ru.paracticum.ewm_ss.exception_handler;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter

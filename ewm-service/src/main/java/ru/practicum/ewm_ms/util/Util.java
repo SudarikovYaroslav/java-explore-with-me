@@ -29,7 +29,7 @@ public class Util {
     }
 
     public static String getParticipationNotFoundMessage(long requestId) {
-        return  "Participation request with id=" + requestId +" was not found.";
+        return  "Participation request with id=" + requestId + " was not found.";
     }
 
     public static User checkIfUserExists(Long userId, UserRepository repo) {
@@ -46,14 +46,6 @@ public class Util {
             throw new NotFoundException(getEventNotFoundMessage(eventId));
         }
         return event;
-    }
-
-    public static Participation checkIfParticipationRequestExists(Long requestId, ParticipationRepository repo) {
-        Participation par = repo.findById(requestId).orElse(null);
-        if (par == null) {
-            throw new NotFoundException(getParticipationNotFoundMessage(requestId));
-        }
-        return par;
     }
 
     public static Compilation checkIfCompilationExists(Long compId, CompilationRepository repo) {
@@ -92,6 +84,6 @@ public class Util {
     }
 
     public static Category mapIdToCategory(Long catId, CategoryRepository repo) {
-        return repo.findById(catId).orElseThrow(()-> new NotFoundException(getCategoryNotFoundMessage(catId)));
+        return repo.findById(catId).orElseThrow(() -> new NotFoundException(getCategoryNotFoundMessage(catId)));
     }
 }

@@ -29,7 +29,7 @@ public class Compilation {
     )
     @ToString.Exclude
     private List<Event> events;
-    @Column(name = PINNED_COLUMN_NAME, nullable = false )
+    @Column(name = PINNED_COLUMN_NAME, nullable = false)
     private Boolean pinned;
     @Column(name = TITLE_COLUMN_NAME, nullable = false)
     private String title;

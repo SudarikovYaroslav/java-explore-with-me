@@ -52,7 +52,7 @@ public class EventPublicController {
                 from,
                 size
         );
-        return eventService.getEvents(criteria, clientIp, endpoint) ;
+        return eventService.getEvents(criteria, clientIp, endpoint);
     }
 
     @GetMapping("/{id}")

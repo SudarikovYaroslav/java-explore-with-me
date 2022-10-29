@@ -21,7 +21,7 @@ public class Hit {
     @Id
     @Column(name = ID_COLUMN_NAME)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long hit_id;
+    private Long hitId;
     @Column(name = APP_COLUMN_NAME, nullable = false)
     private String app;
     @Column(name = URI_COLUMN_NAME)

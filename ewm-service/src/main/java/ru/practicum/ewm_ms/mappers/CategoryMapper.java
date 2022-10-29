@@ -6,7 +6,8 @@ import ru.practicum.ewm_ms.model.Category;
 
 public class CategoryMapper {
 
-    private CategoryMapper() {}
+    private CategoryMapper() {
+    }
 
     public static Category toModel(CategoryPostDto dto) {
         return Category.builder()

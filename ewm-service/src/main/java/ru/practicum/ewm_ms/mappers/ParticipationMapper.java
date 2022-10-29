@@ -3,9 +3,9 @@ package ru.practicum.ewm_ms.mappers;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.exception.EnumParseException;
 import ru.practicum.ewm_ms.exception.NotFoundException;
-import ru.practicum.ewm_ms.model.ParticipationState;
 import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.model.Participation;
+import ru.practicum.ewm_ms.model.ParticipationState;
 import ru.practicum.ewm_ms.model.User;
 import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
@@ -13,7 +13,8 @@ import ru.practicum.ewm_ms.util.Util;
 
 public class ParticipationMapper {
 
-    private ParticipationMapper() {}
+    private ParticipationMapper() {
+    }
 
     public static Participation toModel(ParticipationDto dto, EventRepository eventRepo, UserRepository userRepo) {
         return Participation.builder()
@@ -37,7 +38,7 @@ public class ParticipationMapper {
 
     private static ParticipationState parseApplicationState(String state) {
         ParticipationState enumState;
-        try{
+        try {
             enumState = ParticipationState.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new EnumParseException("Недопустимое значение статуса заявки" + state);
@@ -47,7 +48,7 @@ public class ParticipationMapper {
 
     private static Event getEventById(Long eventId, EventRepository repo) {
         Event event = repo.findById(eventId).orElse(null);
-        if (event == null){
+        if (event == null) {
             throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
         }
         return event;
@@ -55,7 +56,7 @@ public class ParticipationMapper {
 
     private static User getUserById(Long userId, UserRepository repo) {
         User user = repo.findById(userId).orElse(null);
-        if (user == null){
+        if (user == null) {
             throw new NotFoundException(Util.getUserNotFoundMessage(userId));
         }
         return user;

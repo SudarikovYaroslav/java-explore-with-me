@@ -55,7 +55,7 @@ public class EventServiceUtil {
                     criteriaBuilder.like(root.get("description"), "%" + params.getText() + "%")
                 );
             }
-            if (null != params.getCategories() && !params.getCategories().isEmpty()){
+            if (null != params.getCategories() && !params.getCategories().isEmpty()) {
                 for (Long catId : params.getCategories()) {
                     predicates.add(criteriaBuilder.in(root.get("category").get("id")).value(catId));
                 }
