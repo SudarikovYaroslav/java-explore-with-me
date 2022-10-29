@@ -4,13 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
 public class ApiError {
-    private Error[] errors;
+    private List<Error> errors;
     private String message;
     private String reason;
     private String status;
-    private LocalDateTime timestamp;
+    private String timestamp;
 }
