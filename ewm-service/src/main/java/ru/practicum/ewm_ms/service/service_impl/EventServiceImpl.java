@@ -1,13 +1,11 @@
 package ru.practicum.ewm_ms.service.service_impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.client.EventClient;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
@@ -46,12 +44,12 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public List<EventShortDto> getEvents(EventSearchParams params, String clientIp, String endpoint) {
-        Sort sort = Sort.by(params.getSort().toString());
+        Sort sort = getSort(params.getSort());
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize(), sort);
         Specification<Event> specification = getSpecification(params, true);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
         addViewForEach(events, eventRepo);
-        client.postHit(endpoint, clientIp);
+//        client.postHit(endpoint, clientIp);
         return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
@@ -63,7 +61,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException(Util.getEventNotFoundMessage(id));
         }
         event = addView(event, eventRepo);
-        client.postHit(endpoint, clientIp);
+//        client.postHit(endpoint, clientIp);
         return EventMapper.toEventDetailedDto(event);
     }
 

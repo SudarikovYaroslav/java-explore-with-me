@@ -1,5 +1,6 @@
 package ru.practicum.ewm_ms.util;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.ewm_ms.dto.event.EventPatchDto;
 import ru.practicum.ewm_ms.exception.ForbiddenException;
@@ -21,6 +22,16 @@ public class EventServiceUtil {
 
     public static final long HOURS_LEFT_BEFORE_EVENT = 2;
     public static final long HOURS_LEFT_AFTER_PUBLICATION = 1;
+
+    public static Sort getSort(EventSort sortBy) {
+        if (sortBy.equals(EventSort.EVENT_DATE)) {
+            return Sort.by(sortBy.getValue());
+        }
+        if (sortBy.equals(EventSort.VIEWS)) {
+            return Sort.by(sortBy.getValue());
+        }
+        return Sort.unsorted();
+    }
 
     public static Specification<Event> getSpecification(EventSearchParams params, boolean publicRequest) {
         return  (root, query, criteriaBuilder) -> {
