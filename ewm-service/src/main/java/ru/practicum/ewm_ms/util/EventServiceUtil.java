@@ -28,43 +28,45 @@ public class EventServiceUtil {
 
             if (params.getUserIds() != null) {
                 for (Long userId : params.getUserIds()) {
-                    predicates.add(criteriaBuilder.equal(root.get("initiator_id"), userId));
+                    predicates.add(criteriaBuilder.in(root.get("initiator").get("id")).value(userId));
                 }
             }
             if (publicRequest) {
                 predicates.add(criteriaBuilder.equal(root.get("state"), PublicationState.PUBLISHED));
             } else {
                 for (PublicationState state : params.getStates()) {
-                    predicates.add(criteriaBuilder.equal(root.get("state"), state));
+                    predicates.add(criteriaBuilder.in(root.get("state")).value(state));
                 }
             }
             if (null != params.getText()) {
-                predicates.add(criteriaBuilder.like(root.get("annotation"), "%"+params.getText()+"%"));
-                predicates.add(criteriaBuilder.like(root.get("description"), "%"+params.getText()+"%"));
+                criteriaBuilder.or(
+                    criteriaBuilder.like(root.get("annotation"), "%" + params.getText() + "%"),
+                    criteriaBuilder.like(root.get("description"), "%" + params.getText() + "%")
+                );
             }
             if (null != params.getCategories() && !params.getCategories().isEmpty()){
                 for (Long catId : params.getCategories()) {
-                    predicates.add(criteriaBuilder.equal(root.get("category_id"), catId));
+                    predicates.add(criteriaBuilder.in(root.get("category").get("id")).value(catId));
                 }
             }
             if (null != params.getPaid()) {
                 predicates.add(criteriaBuilder.equal(root.get("paid"), params.getPaid()));
             }
             if (null != params.getRangeStart()) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("published_on"), params.getRangeStart()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("publishedOn"), params.getRangeStart()));
             } else {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("published_on"), LocalDateTime.now()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("publishedOn"), LocalDateTime.now()));
             }
             if (null != params.getRangeEnd()) {
-                predicates.add(criteriaBuilder.lessThan(root.get("published_on"), params.getRangeEnd()));
+                predicates.add(criteriaBuilder.lessThan(root.get("publishedOn"), params.getRangeEnd()));
             } else {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("published_on"), LocalDateTime.now()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("publishedOn"), LocalDateTime.now()));
             }
             if (null != params.getOnlyAvailable() && params.getOnlyAvailable()) {
-                predicates.add(criteriaBuilder.lessThan(root.get("participant_limit"), root.get("confirmed_Requests")));
+                predicates.add(criteriaBuilder.lessThan(root.get("participantLimit"), root.get("confirmedRequests")));
             }
 
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
         };
     }
 

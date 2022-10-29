@@ -61,6 +61,7 @@ public class Event {
     private LocalDateTime publishedOn;
     @Column(name = REQUEST_MODERATION_COLUMN_NAME, nullable = false)
     private Boolean requestModeration;
+    @Enumerated(value = EnumType.STRING)
     @Column(name = STATE_COLUMN_NAME, nullable = false)
     private PublicationState state;
     @Column(name = TITLE_COLUMN_NAME, nullable = false)

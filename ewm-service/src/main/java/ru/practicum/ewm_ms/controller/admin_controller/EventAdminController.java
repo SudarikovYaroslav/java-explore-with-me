@@ -24,11 +24,11 @@ public class EventAdminController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventDetailedDto> findEventsByConditions(@RequestParam List<Long> userIds,
-                                                         @RequestParam List<String> states,
-                                                         @RequestParam List<Long> categories,
-                                                         @RequestParam String rangeStart,
-                                                         @RequestParam String rangeEnd,
+    public List<EventDetailedDto> findEventsByConditions(@RequestParam(required = false) List<Long> userIds,
+                                                         @RequestParam(required = false) List<String> states,
+                                                         @RequestParam(required = false) List<Long> categories,
+                                                         @RequestParam(required = false) String rangeStart,
+                                                         @RequestParam(required = false) String rangeEnd,
                                                          @PositiveOrZero
                                                          @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
                                                          @Positive
