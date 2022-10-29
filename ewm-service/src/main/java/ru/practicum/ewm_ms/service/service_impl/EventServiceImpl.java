@@ -49,7 +49,7 @@ public class EventServiceImpl implements EventService {
         Specification<Event> specification = getSpecification(params, true);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
         addViewForEach(events, eventRepo);
-//        client.postHit(endpoint, clientIp);
+        client.postHit(endpoint, clientIp);
         return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
@@ -61,7 +61,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException(Util.getEventNotFoundMessage(id));
         }
         event = addView(event, eventRepo);
-//        client.postHit(endpoint, clientIp);
+        client.postHit(endpoint, clientIp);
         return EventMapper.toEventDetailedDto(event);
     }
 

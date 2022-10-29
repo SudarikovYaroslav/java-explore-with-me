@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.paracticum.ewm_ss.dto.HitPostDto;
 import ru.paracticum.ewm_ss.dto.HitResponseDto;
+import ru.paracticum.ewm_ss.mapper.DateTimeMapper;
 import ru.paracticum.ewm_ss.model.HitSearchParams;
 import ru.paracticum.ewm_ss.service.StatsService;
 
@@ -33,8 +34,8 @@ public class StatisticsController {
                                               @RequestParam Boolean unique) {
         log.info("Получение статистики с параметрами start:{}, end:{}, uris:{}, unique:{}", start, end, uris, unique);
         HitSearchParams params = new HitSearchParams(
-                URLEncoder.encode(start, StandardCharsets.UTF_8),
-                URLEncoder.encode(end, StandardCharsets.UTF_8),
+                start,
+                end,
                 uris,
                 unique);
         return statsService.getHits(params);

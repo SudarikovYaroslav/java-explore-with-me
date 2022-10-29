@@ -11,7 +11,7 @@ public class DateTimeMapper {
     private static DateTimeFormatter formatter;
 
     public static LocalDateTime toDateTime(String str) {
-        formatter = DateTimeFormatter.ISO_DATE_TIME;
+        formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
         return LocalDateTime.parse(str, formatter);
     }
 

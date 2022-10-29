@@ -30,7 +30,8 @@ public class StatsServiceImpl implements StatsService {
     public List<HitResponseDto> getHits(HitSearchParams params) {
         Specification<Hit> specification = getSpecification(params);
         List<Hit> hits = hitRepo.findAll(specification);
-        return hits.stream().map((hit -> HitMapper.toDto(hit, hitRepo))).collect(Collectors.toList());
+        List<HitResponseDto> dtos = hits.stream().map((hit -> HitMapper.toDto(hit, hitRepo))).collect(Collectors.toList());
+        return dtos;
     }
 
     private Specification<Hit> getSpecification(HitSearchParams params) {
@@ -38,10 +39,10 @@ public class StatsServiceImpl implements StatsService {
             List<Predicate> predicates = new ArrayList<>();
 
             if (null != params.getStart()) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), params.getStart()));
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("timeStamp"), params.getStart()));
             }
             if (null != params.getEnd()) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), params.getEnd()));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("timeStamp"), params.getEnd()));
             }
             if (null != params.getUris() && !params.getUris().isEmpty()) {
                 for (String uri : params.getUris()) {
