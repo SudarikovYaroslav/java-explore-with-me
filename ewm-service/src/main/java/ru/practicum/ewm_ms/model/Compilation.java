@@ -27,6 +27,7 @@ public class Compilation {
             joinColumns = {@JoinColumn(name = "compilation_id")},
             inverseJoinColumns = {@JoinColumn(name = "event_id")}
     )
+    @ToString.Exclude
     private List<Event> events;
     @Column(name = PINNED_COLUMN_NAME, nullable = false )
     private Boolean pinned;
