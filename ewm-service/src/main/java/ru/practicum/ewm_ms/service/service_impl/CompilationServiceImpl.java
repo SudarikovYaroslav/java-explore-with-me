@@ -49,10 +49,9 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationResponseDto findById(Long compId) {
-        Compilation compilation = compilationRepo.findById(compId).orElse(null);
-        if (compilation == null) {
-            throw new NotFoundException(Util.getCompilationNotFoundMessage(compId));
-        }
+        Compilation compilation = compilationRepo.findById(compId)
+                .orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
+
         return CompilationMapper.toResponseDto(compilation);
     }
 

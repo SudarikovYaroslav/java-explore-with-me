@@ -2,16 +2,19 @@ package ru.practicum.ewm_ms.controller.admin_controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_ms.dto.user.NewUserDto;
 import ru.practicum.ewm_ms.dto.user.UserDto;
 import ru.practicum.ewm_ms.service.UserService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/users")
@@ -33,7 +36,8 @@ public class UserAdminController {
     }
 
     @PostMapping
-    public UserDto postUser(@RequestBody NewUserDto dto) {
+    public UserDto postUser(@Valid
+                            @RequestBody NewUserDto dto) {
         log.info("Post User {}", dto);
         return userService.postUser(dto);
     }

@@ -1,5 +1,7 @@
 package ru.practicum.ewm_ms.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.ewm_ms.dto.event.EventPatchDto;
@@ -15,10 +17,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventServiceUtil {
-
-    private EventServiceUtil() {
-    }
 
     public static final long HOURS_LEFT_BEFORE_EVENT = 2;
     public static final long HOURS_LEFT_AFTER_PUBLICATION = 1;

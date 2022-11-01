@@ -1,6 +1,7 @@
 package ru.practicum.ewm_ms.exception_handler;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -13,6 +14,6 @@ public class ApiError {
     private List<Error> errors;
     private String message;
     private String reason;
-    private Status status;
+    private HttpStatus status;
     private String timestamp;
 }

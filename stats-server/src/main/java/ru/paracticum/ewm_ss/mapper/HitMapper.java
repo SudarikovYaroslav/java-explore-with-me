@@ -1,5 +1,7 @@
 package ru.paracticum.ewm_ss.mapper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.paracticum.ewm_ss.dto.HitPostDto;
 import ru.paracticum.ewm_ss.dto.HitResponseDto;
 import ru.paracticum.ewm_ss.model.Hit;
@@ -7,10 +9,8 @@ import ru.paracticum.ewm_ss.repository.HitRepository;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HitMapper {
-
-    private HitMapper() {
-    }
 
     public static Hit toModel(HitPostDto dto) {
         Hit hit = Hit.builder()

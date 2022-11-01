@@ -1,5 +1,7 @@
 package ru.practicum.ewm_ms.mappers;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.ewm_ms.dto.compilation.CompilationPostDto;
 import ru.practicum.ewm_ms.dto.compilation.CompilationResponseDto;
 import ru.practicum.ewm_ms.dto.event.EventShortDto;
@@ -12,10 +14,8 @@ import ru.practicum.ewm_ms.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CompilationMapper {
-
-    private CompilationMapper() {
-    }
 
     public static Compilation toModel(CompilationPostDto dto, EventRepository repo) {
         return Compilation.builder()

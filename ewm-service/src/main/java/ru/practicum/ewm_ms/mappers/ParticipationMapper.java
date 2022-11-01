@@ -1,5 +1,7 @@
 package ru.practicum.ewm_ms.mappers;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.exception.EnumParseException;
 import ru.practicum.ewm_ms.exception.NotFoundException;
@@ -11,10 +13,8 @@ import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.util.Util;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParticipationMapper {
-
-    private ParticipationMapper() {
-    }
 
     public static Participation toModel(ParticipationDto dto, EventRepository eventRepo, UserRepository userRepo) {
         return Participation.builder()

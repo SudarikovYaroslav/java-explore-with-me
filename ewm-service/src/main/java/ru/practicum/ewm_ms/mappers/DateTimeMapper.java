@@ -1,23 +1,22 @@
 package ru.practicum.ewm_ms.mappers;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateTimeMapper {
 
-    private DateTimeMapper() {
-    }
-
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-    private static DateTimeFormatter formatter;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
 
     public static LocalDateTime toDateTime(String str) {
-        formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
         return LocalDateTime.parse(str, formatter);
     }
 
     public static String toString(LocalDateTime date) {
-        formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
         return date.format(formatter);
     }
 }

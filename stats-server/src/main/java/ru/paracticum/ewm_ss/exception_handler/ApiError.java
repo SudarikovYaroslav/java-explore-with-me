@@ -2,6 +2,7 @@ package ru.paracticum.ewm_ss.exception_handler;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -11,6 +12,6 @@ public class ApiError {
     private List<Error> errors;
     private String message;
     private String reason;
-    private String status;
+    private HttpStatus status;
     private String timestamp;
 }

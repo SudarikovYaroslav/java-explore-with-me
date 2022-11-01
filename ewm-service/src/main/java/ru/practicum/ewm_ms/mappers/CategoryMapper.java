@@ -1,13 +1,13 @@
 package ru.practicum.ewm_ms.mappers;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.ewm_ms.dto.category.CategoryDto;
 import ru.practicum.ewm_ms.dto.category.CategoryPostDto;
 import ru.practicum.ewm_ms.model.Category;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CategoryMapper {
-
-    private CategoryMapper() {
-    }
 
     public static Category toModel(CategoryPostDto dto) {
         return Category.builder()

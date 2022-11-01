@@ -1,5 +1,7 @@
 package ru.practicum.ewm_ms.mappers;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.ewm_ms.dto.event.EventDetailedDto;
 import ru.practicum.ewm_ms.dto.event.EventPatchDto;
 import ru.practicum.ewm_ms.dto.event.EventPostDto;
@@ -15,10 +17,8 @@ import ru.practicum.ewm_ms.util.Util;
 
 import java.time.LocalDateTime;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventMapper {
-
-    private EventMapper() {
-    }
 
     public static Event toModel(EventPostDto dto, Long initiator, CategoryRepository catRepo, UserRepository userRepo) {
         Event event = Event.builder()

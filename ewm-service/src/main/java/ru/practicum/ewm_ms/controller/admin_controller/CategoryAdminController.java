@@ -12,8 +12,8 @@ import ru.practicum.ewm_ms.util.CommonValidMarker;
 import javax.validation.constraints.Positive;
 
 @Slf4j
-@RestController
 @Validated
+@RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/categories")
 public class CategoryAdminController {

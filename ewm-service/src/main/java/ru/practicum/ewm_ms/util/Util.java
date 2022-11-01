@@ -1,5 +1,7 @@
 package ru.practicum.ewm_ms.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.model.*;
 import ru.practicum.ewm_ms.repository.*;
@@ -7,10 +9,8 @@ import ru.practicum.ewm_ms.repository.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Util {
-
-    private Util() {
-    }
 
     public static String getUserNotFoundMessage(long userId) {
         return "User with id=" + userId + " was not found.";
@@ -85,5 +85,9 @@ public class Util {
 
     public static Category mapIdToCategory(Long catId, CategoryRepository repo) {
         return repo.findById(catId).orElseThrow(() -> new NotFoundException(getCategoryNotFoundMessage(catId)));
+    }
+
+    public static boolean isCategoryEmpty(long categoryId, EventRepository eventRepo) {
+        return eventRepo.findAllByCategoryId(categoryId).isEmpty();
     }
 }

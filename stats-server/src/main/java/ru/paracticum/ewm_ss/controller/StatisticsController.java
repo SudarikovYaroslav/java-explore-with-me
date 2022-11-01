@@ -2,16 +2,19 @@ package ru.paracticum.ewm_ss.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.paracticum.ewm_ss.dto.HitPostDto;
 import ru.paracticum.ewm_ss.dto.HitResponseDto;
 import ru.paracticum.ewm_ss.model.HitSearchParams;
 import ru.paracticum.ewm_ss.service.StatsService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 public class StatisticsController {
@@ -19,7 +22,8 @@ public class StatisticsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
-    public void postHit(@RequestBody HitPostDto dto) {
+    public void postHit(@Valid
+                        @RequestBody HitPostDto dto) {
         log.info("Сохраняется запрос: {}", dto);
         statsService.postHit(dto);
     }

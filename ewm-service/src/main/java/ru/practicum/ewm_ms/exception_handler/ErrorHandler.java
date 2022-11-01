@@ -2,6 +2,7 @@ package ru.practicum.ewm_ms.exception_handler;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -27,7 +28,7 @@ public class ErrorHandler {
         return ApiError.builder()
                 .message(ex.getMessage())
                 .reason("request parameter messed")
-                .status(Status.BAD_REQUEST)
+                .status(HttpStatus.BAD_REQUEST)
                 .build();
     }
 
@@ -38,7 +39,7 @@ public class ErrorHandler {
         return ApiError.builder()
                 .message(ex.getMessage())
                 .reason("For the requested operation the conditions are not met.")
-                .status(Status.FORBIDDEN)
+                .status(HttpStatus.FORBIDDEN)
                 .build();
     }
 
@@ -49,7 +50,7 @@ public class ErrorHandler {
         return ApiError.builder()
                 .message(ex.getMessage())
                 .reason("The required object was not found.")
-                .status(Status.NOT_FOUND)
+                .status(HttpStatus.NOT_FOUND)
                 .build();
     }
 
@@ -60,7 +61,7 @@ public class ErrorHandler {
         return ApiError.builder()
                 .message(ex.getMessage())
                 .reason("For the requested operation the conditions are not met.")
-                .status(Status.FORBIDDEN)
+                .status(HttpStatus.FORBIDDEN)
                 .timestamp(DateTimeMapper.toString(LocalDateTime.now()))
                 .build();
     }
@@ -72,18 +73,30 @@ public class ErrorHandler {
         return  ApiError.builder()
                 .message(e.getMessage())
                 .reason("For the requested operation the conditions are not met.")
-                .status(Status.BAD_REQUEST)
+                .status(HttpStatus.BAD_REQUEST)
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handle(DataIntegrityViolationException e) {
+        log.warn("Data integrity violation: ", e);
+        return ApiError.builder()
+                .message(e.getMessage())
+                .reason("Data integrity violation")
+                .status(HttpStatus.CONFLICT)
                 .build();
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handle(Throwable ex) {
+        log.info("Unexpected internal server error: ", ex);
         ex.printStackTrace();
         return ApiError.builder()
                 .message(ex.getMessage())
                 .reason("Error occurred")
-                .status(Status.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .timestamp(DateTimeMapper.toString(LocalDateTime.now()))
                 .build();
     }
