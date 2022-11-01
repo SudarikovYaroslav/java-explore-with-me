@@ -9,15 +9,15 @@ import ru.practicum.ewm_ms.util.CommonValidMarker;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @Builder
-@Validated
 @AllArgsConstructor
 public class NewUserDto {
     @Email(groups = CommonValidMarker.class)
-    @NotBlank(groups = CommonValidMarker.class)
+    @NotNull(groups = CommonValidMarker.class)
     private String email;
     @NotBlank(groups = CommonValidMarker.class)
     private String name;

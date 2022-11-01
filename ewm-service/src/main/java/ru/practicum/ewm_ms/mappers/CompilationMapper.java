@@ -35,15 +35,7 @@ public class CompilationMapper {
     }
 
     private static List<Event> replaceIdWithEvents(List<Long> ids, EventRepository repo) {
-        List<Event> events = new ArrayList<>();
-        for (long eventId : ids) {
-            Event event = repo.findById(eventId).orElse(null);
-            if (event == null) {
-                throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
-            }
-            events.add(event);
-        }
-        return events;
+        return repo.findAll(ids);
     }
 
     private static List<EventShortDto> replaceEventsWithEventShortDto(List<Event> events) {
@@ -52,5 +44,15 @@ public class CompilationMapper {
             dtos.add(EventMapper.toEventShortDto(ev));
         }
         return dtos;
+    }
+
+    private static String mapToString(List<Long> ids) {
+        StringBuilder builder = new StringBuilder();
+        for (Long id : ids) {
+            builder.append(id);
+            builder.append(",");
+        }
+        builder.deleteCharAt(builder.length() - 1);
+        return builder.toString();
     }
 }

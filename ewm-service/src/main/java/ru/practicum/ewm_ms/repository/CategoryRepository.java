@@ -6,5 +6,5 @@ import ru.practicum.ewm_ms.model.Category;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Optional<Category> findByName(String categoryName);
+
 }

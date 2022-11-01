@@ -90,19 +90,13 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public void unpinCompilation(Long compId) {
         Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
-        if (compilation.getPinned()) {
-            compilation.setPinned(false);
-            compilationRepo.save(compilation);
-        }
+        compilation.setPinned(false);
     }
 
     @Override
     @Transactional
     public void pinCompilation(Long compId) {
         Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
-        if (!compilation.getPinned()) {
-            compilation.setPinned(true);
-            compilationRepo.save(compilation);
-        }
+        compilation.setPinned(true);
     }
 }
