@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.paracticum.ewm_ss.dto.HitPostDto;
 import ru.paracticum.ewm_ss.dto.HitResponseDto;
+import ru.paracticum.ewm_ss.model.App;
 import ru.paracticum.ewm_ss.model.Hit;
 import ru.paracticum.ewm_ss.repository.HitRepository;
 
@@ -12,10 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HitMapper {
 
-    public static Hit toModel(HitPostDto dto) {
+    public static Hit toModel(HitPostDto dto, App app) {
         Hit hit = Hit.builder()
                 .hitId(dto.getId())
-                .app(dto.getApp())
+                .app(app)
                 .uri(dto.getUri())
                 .ip(dto.getIp())
                 .build();
@@ -29,7 +30,7 @@ public class HitMapper {
 
     public static  HitResponseDto toDto(Hit hit, HitRepository repo) {
         return HitResponseDto.builder()
-                .app(hit.getApp())
+                .app(hit.getApp().getName())
                 .uri(hit.getUri())
                 .hits(repo.getCountHits(hit.getUri()))
                 .build();
