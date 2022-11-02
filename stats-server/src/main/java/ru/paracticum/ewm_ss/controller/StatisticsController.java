@@ -11,6 +11,7 @@ import ru.paracticum.ewm_ss.service.StatsService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j
@@ -40,5 +41,11 @@ public class StatisticsController {
                 uris,
                 unique);
         return statsService.getHits(params);
+    }
+
+    @GetMapping("/views/{eventId}")
+    public Long getViewsByEventId(@Positive
+                                  @PathVariable Long eventId) {
+        return statsService.getViewsByEventId(eventId);
     }
 }

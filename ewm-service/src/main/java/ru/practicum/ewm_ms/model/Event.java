@@ -66,6 +66,4 @@ public class Event {
     private PublicationState state;
     @Column(name = TITLE_COLUMN_NAME, nullable = false)
     private String title;
-    @Column(name = VIEWS_COLUMN_NAME, nullable = false)
-    private Long views;
 }

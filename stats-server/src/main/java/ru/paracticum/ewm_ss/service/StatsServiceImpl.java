@@ -44,6 +44,11 @@ public class StatsServiceImpl implements StatsService {
         return hits.stream().map((hit -> HitMapper.toDto(hit, hitRepo))).collect(Collectors.toList());
     }
 
+    @Override
+    public Long getViewsByEventId(Long eventId) {
+        return hitRepo.getCountHitsByEventId(eventId);
+    }
+
     private Specification<Hit> getSpecification(HitSearchParams params) {
         return ((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

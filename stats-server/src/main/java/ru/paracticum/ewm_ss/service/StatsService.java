@@ -10,4 +10,6 @@ public interface StatsService {
     void postHit(HitPostDto dto);
 
     List<HitResponseDto> getHits(HitSearchParams params);
+
+    Long getViewsByEventId(Long eventId);
 }

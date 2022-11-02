@@ -114,18 +114,6 @@ public class EventServiceUtil {
         return date.isAfter(LocalDateTime.now().plusHours(HOURS_LEFT_BEFORE_EVENT));
     }
 
-    public static Event addView(Event event, EventRepository eventRepo) {
-        long views = event.getViews() + 1;
-        event.setViews(views);
-        return eventRepo.save(event);
-    }
-
-    public static void addViewForEach(List<Event> events, EventRepository eventRepo) {
-        for (Event event : events) {
-            addView(event, eventRepo);
-        }
-    }
-
     public static void increaseConfirmedRequest(Event event, EventRepository eventRepo) {
         int confirmedRec = event.getConfirmedRequests() + 1;
         event.setConfirmedRequests(confirmedRec);

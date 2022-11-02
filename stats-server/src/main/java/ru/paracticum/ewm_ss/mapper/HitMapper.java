@@ -19,6 +19,7 @@ public class HitMapper {
                 .app(app)
                 .uri(dto.getUri())
                 .ip(dto.getIp())
+                .eventId(dto.getEventId())
                 .build();
         if (dto.getTimeStamp() != null) {
             hit.setTimeStamp(DateTimeMapper.toDateTime(dto.getTimeStamp()));
@@ -33,6 +34,7 @@ public class HitMapper {
                 .app(hit.getApp().getName())
                 .uri(hit.getUri())
                 .hits(repo.getCountHits(hit.getUri()))
+                .event_id(hit.getEventId())
                 .build();
     }
 }

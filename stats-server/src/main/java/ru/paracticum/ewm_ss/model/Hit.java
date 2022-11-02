@@ -17,6 +17,7 @@ public class Hit {
     public static final String URI_COLUMN_NAME = "uri";
     public static final String ID_COLUMN_NAME = "hit_id";
     public static final String APP_COLUMN_NAME = "app_id";
+    public static final String EVENT_ID_COLUMN_NAME = "event_id";
     public static final String TIMESTAMP_COLUMN_NAME = "time_stamp";
 
     @Id
@@ -32,4 +33,6 @@ public class Hit {
     private String ip;
     @Column(name = TIMESTAMP_COLUMN_NAME)
     private LocalDateTime timeStamp;
+    @Column(name = EVENT_ID_COLUMN_NAME)
+    private Long eventId;
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm_ms.client.EventClient;
 import ru.practicum.ewm_ms.dto.compilation.CompilationPostDto;
 import ru.practicum.ewm_ms.dto.compilation.CompilationResponseDto;
 import ru.practicum.ewm_ms.exception.NotFoundException;
@@ -31,6 +32,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepo;
     private final CompEventsRepository compEventsRepo;
     private final EventRepository eventRepo;
+    private final EventClient client;
 
     @Override
     public List<CompilationResponseDto> findAll(Boolean pinned, Integer from, Integer size) {
@@ -43,7 +45,7 @@ public class CompilationServiceImpl implements CompilationService {
         }
         return compilations
                 .stream()
-                .map(CompilationMapper::toResponseDto)
+                .map((Compilation compilation) -> CompilationMapper.toResponseDto(compilation, client))
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +54,7 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = compilationRepo.findById(compId)
                 .orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
 
-        return CompilationMapper.toResponseDto(compilation);
+        return CompilationMapper.toResponseDto(compilation, client);
     }
 
     @Override
@@ -60,7 +62,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationResponseDto addNewCompilation(CompilationPostDto dto) {
         Compilation compilation = CompilationMapper.toModel(dto, eventRepo);
         compilation = compilationRepo.save(compilation);
-        return CompilationMapper.toResponseDto(compilation);
+        return CompilationMapper.toResponseDto(compilation, client);
     }
 
     @Override

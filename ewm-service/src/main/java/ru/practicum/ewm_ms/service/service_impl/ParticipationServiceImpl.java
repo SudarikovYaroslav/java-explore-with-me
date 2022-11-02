@@ -12,7 +12,6 @@ import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.ParticipationRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.service.ParticipationService;
-import ru.practicum.ewm_ms.util.Util;
 
 import java.time.LocalDateTime;
 import java.util.List;

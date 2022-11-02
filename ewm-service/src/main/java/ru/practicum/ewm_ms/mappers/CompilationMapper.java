@@ -2,14 +2,13 @@ package ru.practicum.ewm_ms.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm_ms.client.EventClient;
 import ru.practicum.ewm_ms.dto.compilation.CompilationPostDto;
 import ru.practicum.ewm_ms.dto.compilation.CompilationResponseDto;
 import ru.practicum.ewm_ms.dto.event.EventShortDto;
-import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.model.Compilation;
 import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.repository.EventRepository;
-import ru.practicum.ewm_ms.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +24,9 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static CompilationResponseDto toResponseDto(Compilation compilation) {
+    public static CompilationResponseDto toResponseDto(Compilation compilation, EventClient client) {
         return CompilationResponseDto.builder()
-                .events(replaceEventsWithEventShortDto(compilation.getEvents()))
+                .events(replaceEventsWithEventShortDto(compilation.getEvents(), client))
                 .id(compilation.getId())
                 .pinned(compilation.getPinned())
                 .title(compilation.getTitle())
@@ -38,10 +37,10 @@ public class CompilationMapper {
         return repo.findAll(ids);
     }
 
-    private static List<EventShortDto> replaceEventsWithEventShortDto(List<Event> events) {
+    private static List<EventShortDto> replaceEventsWithEventShortDto(List<Event> events, EventClient client) {
         List<EventShortDto> dtos = new ArrayList<>();
         for (Event ev : events) {
-            dtos.add(EventMapper.toEventShortDto(ev));
+            dtos.add(EventMapper.toEventShortDto(ev, client));
         }
         return dtos;
     }

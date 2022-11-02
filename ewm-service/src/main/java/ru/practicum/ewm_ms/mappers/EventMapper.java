@@ -2,6 +2,7 @@ package ru.practicum.ewm_ms.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm_ms.client.EventClient;
 import ru.practicum.ewm_ms.dto.event.EventDetailedDto;
 import ru.practicum.ewm_ms.dto.event.EventPatchDto;
 import ru.practicum.ewm_ms.dto.event.EventPostDto;
@@ -37,7 +38,6 @@ public class EventMapper {
                 .requestModeration(dto.getRequestModeration())
                 .state(PublicationState.PENDING)
                 .title(dto.getTitle())
-                .views(0L)
                 .build();
 
         event.setRequestModeration(event.getRequestModeration() == null || event.getRequestModeration());
@@ -64,7 +64,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventShortDto toEventShortDto(Event event) {
+    public static EventShortDto toEventShortDto(Event event, EventClient client) {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
@@ -74,11 +74,11 @@ public class EventMapper {
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(event.getViews())
+                .views(client.getViewsByEventId(event.getId()).getBody())
                 .build();
     }
 
-    public static EventDetailedDto toEventDetailedDto(Event event) {
+    public static EventDetailedDto toEventDetailedDto(Event event, EventClient client) {
         EventDetailedDto dto = EventDetailedDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
@@ -94,7 +94,7 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState().toString())
                 .title(event.getTitle())
-                .views(event.getViews())
+                .views(client.getViewsByEventId(event.getId()).getBody())
                 .build();
 
         if (event.getPublishedOn() != null) {

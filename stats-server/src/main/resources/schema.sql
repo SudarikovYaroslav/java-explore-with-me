@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS hits
     uri varchar(512) NOT NULL,
     ip varchar(15) NOT NULL,
     time_stamp TIMESTAMP WITHOUT TIME ZONE,
+    event_id BIGINT NOT NULL,
     PRIMARY KEY (hit_id)
 );

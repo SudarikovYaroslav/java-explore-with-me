@@ -48,9 +48,10 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize(), sort);
         Specification<Event> specification = getSpecification(params, true);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
-        addViewForEach(events, eventRepo);
-        client.postHit(endpoint, clientIp);
-        return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
+        addHitForEach(endpoint, clientIp, events, client); // модифицировать для сохранения для server-stats
+        return events.stream()
+                .map((Event event) -> EventMapper.toEventShortDto(event, client))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -60,16 +61,17 @@ public class EventServiceImpl implements EventService {
         if (event == null) {
             throw new NotFoundException(Util.getEventNotFoundMessage(id));
         }
-        event = addView(event, eventRepo);
-        client.postHit(endpoint, clientIp);
-        return EventMapper.toEventDetailedDto(event);
+        addHit(endpoint, clientIp, id, client);
+        return EventMapper.toEventDetailedDto(event, client);
     }
 
     @Override
     public List<EventShortDto> findEventsByInitiatorId(Long userId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepo.findAllByInitiatorId(userId, pageable);
-        return events.stream().map(EventMapper::toEventShortDto).collect(Collectors.toList());
+        return events.stream()
+                .map((Event event) -> EventMapper.toEventShortDto(event, client))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -87,7 +89,7 @@ public class EventServiceImpl implements EventService {
             event.setState(PublicationState.PENDING);
         }
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event);
+        return EventMapper.toEventDetailedDto(event, client);
     }
 
     @Override
@@ -100,7 +102,7 @@ public class EventServiceImpl implements EventService {
         Location location = locationRepository.save(event.getLocation());
         event.setLocation(location);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event);
+        return EventMapper.toEventDetailedDto(event, client);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class EventServiceImpl implements EventService {
         if (event == null) {
             throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
         }
-        return EventMapper.toEventDetailedDto(event);
+        return EventMapper.toEventDetailedDto(event, client);
     }
 
     @Override
@@ -125,7 +127,7 @@ public class EventServiceImpl implements EventService {
         }
         event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event);
+        return EventMapper.toEventDetailedDto(event, client);
     }
 
     @Override
@@ -187,7 +189,9 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize());
         Specification<Event> specification = getSpecification(params, false);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
-        return events.stream().map(EventMapper::toEventDetailedDto).collect(Collectors.toList());
+        return events.stream()
+                .map((Event event) -> EventMapper.toEventDetailedDto(event, client))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -224,7 +228,7 @@ public class EventServiceImpl implements EventService {
             editable.setTitle(dto.getTitle());
         }
         editable = eventRepo.save(editable);
-        return EventMapper.toEventDetailedDto(editable);
+        return EventMapper.toEventDetailedDto(editable, client);
     }
 
     @Override
@@ -242,7 +246,7 @@ public class EventServiceImpl implements EventService {
         event.setPublishedOn(LocalDateTime.now());
         event.setState(PublicationState.PUBLISHED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event);
+        return EventMapper.toEventDetailedDto(event, client);
     }
 
     @Override
@@ -255,6 +259,16 @@ public class EventServiceImpl implements EventService {
         }
         event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event);
+        return EventMapper.toEventDetailedDto(event, client);
+    }
+
+    private void addHit(String endpoint, String clientIp, Long eventId, EventClient client) {
+        client.postHit(endpoint,clientIp, eventId);
+    }
+
+    private void addHitForEach(String endpoint, String clientIp, List<Event> events, EventClient client) {
+        for (Event event : events) {
+            addHit(endpoint, clientIp, event.getId(), client);
+        }
     }
 }
