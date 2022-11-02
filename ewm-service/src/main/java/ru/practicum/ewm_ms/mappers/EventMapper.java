@@ -8,11 +8,9 @@ import ru.practicum.ewm_ms.dto.event.EventPatchDto;
 import ru.practicum.ewm_ms.dto.event.EventPostDto;
 import ru.practicum.ewm_ms.dto.event.EventShortDto;
 import ru.practicum.ewm_ms.exception.NotFoundException;
-import ru.practicum.ewm_ms.model.Category;
-import ru.practicum.ewm_ms.model.Event;
-import ru.practicum.ewm_ms.model.PublicationState;
-import ru.practicum.ewm_ms.model.User;
+import ru.practicum.ewm_ms.model.*;
 import ru.practicum.ewm_ms.repository.CategoryRepository;
+import ru.practicum.ewm_ms.repository.ParticipationRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.util.Util;
 
@@ -25,7 +23,6 @@ public class EventMapper {
         Event event = Event.builder()
                 .annotation(dto.getAnnotation())
                 .category(matchCategory(dto.getCategory(), catRepo))
-                .confirmedRequests(0)
                 .createdOn(LocalDateTime.now())
                 .description(dto.getDescription())
                 .eventDate(DateTimeMapper.toDateTime(dto.getEventDate()))
@@ -48,7 +45,6 @@ public class EventMapper {
         return Event.builder()
                 .annotation(dto.getAnnotation())
                 .category(matchCategory(dto.getCategory(), catRepo))
-                .confirmedRequests(null)
                 .createdOn(null)
                 .description(dto.getDescription())
                 .eventDate(DateTimeMapper.toDateTime(dto.getEventDate()))
@@ -64,11 +60,11 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventShortDto toEventShortDto(Event event, EventClient client) {
+    public static EventShortDto toEventShortDto(Event event, EventClient client, ParticipationRepository repo) {
         return EventShortDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests(event.getConfirmedRequests())
+                .confirmedRequests(repo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED))
                 .eventDate(DateTimeMapper.toString(event.getEventDate()))
                 .id(event.getId())
                 .initiator(UserMapper.toUserShortDto(event.getInitiator()))
@@ -78,11 +74,11 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventDetailedDto toEventDetailedDto(Event event, EventClient client) {
+    public static EventDetailedDto toEventDetailedDto(Event event, EventClient client, ParticipationRepository repo) {
         EventDetailedDto dto = EventDetailedDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toDto(event.getCategory()))
-                .confirmedRequests(event.getConfirmedRequests())
+                .confirmedRequests(repo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED))
                 .createdOn(DateTimeMapper.toString(event.getCreatedOn()))
                 .description(event.getDescription())
                 .eventDate(DateTimeMapper.toString(event.getEventDate()))

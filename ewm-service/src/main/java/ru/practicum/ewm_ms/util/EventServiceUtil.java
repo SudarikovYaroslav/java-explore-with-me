@@ -9,7 +9,6 @@ import ru.practicum.ewm_ms.exception.ForbiddenException;
 import ru.practicum.ewm_ms.mappers.DateTimeMapper;
 import ru.practicum.ewm_ms.model.*;
 import ru.practicum.ewm_ms.repository.CategoryRepository;
-import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.ParticipationRepository;
 
 import javax.persistence.criteria.Predicate;
@@ -114,14 +113,9 @@ public class EventServiceUtil {
         return date.isAfter(LocalDateTime.now().plusHours(HOURS_LEFT_BEFORE_EVENT));
     }
 
-    public static void increaseConfirmedRequest(Event event, EventRepository eventRepo) {
-        int confirmedRec = event.getConfirmedRequests() + 1;
-        event.setConfirmedRequests(confirmedRec);
-        eventRepo.save(event);
-    }
-
     public static void checkParticipationLimit(Event event, ParticipationRepository participationRepo) {
-        if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+        if (event.getParticipantLimit().equals(participationRepo
+                .getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED))) {
             List<Participation> participations = participationRepo
                     .findAllByEventIdAndState(event.getId(), ParticipationState.PENDING);
 

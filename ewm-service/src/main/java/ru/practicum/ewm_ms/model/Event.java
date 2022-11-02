@@ -16,7 +16,6 @@ public class Event {
     public static final String PAID_COLUMN_NAME = "paid";
     public static final String STATE_COLUMN_NAME = "state";
     public static final String TITLE_COLUMN_NAME = "title";
-    public static final String VIEWS_COLUMN_NAME = "views";
     public static final String ID_COLUMN_NAME = "event_id";
     public static final String CATEGORY_COLUMN_NAME = "category_id";
     public static final String LOCATION_COLUMN_NAME = "location_id";
@@ -28,7 +27,7 @@ public class Event {
     public static final String DESCRIPTION_ON_COLUMN_NAME = "description";
     public static final String PARTICIPANT_LIMIT_COLUMN_NAME = "participant_limit";
     public static final String REQUEST_MODERATION_COLUMN_NAME = "request_moderation";
-    public static final String CONFIRMED_REQUESTS_COLUMN_NAME = "confirmed_requests";
+//    public static final String CONFIRMED_REQUESTS_COLUMN_NAME = "confirmed_requests";
 
     @Id
     @Column(name = ID_COLUMN_NAME)
@@ -39,8 +38,8 @@ public class Event {
     @ManyToOne(optional = false)
     @JoinColumn(name = CATEGORY_COLUMN_NAME, nullable = false)
     private Category category;
-    @Column(name = CONFIRMED_REQUESTS_COLUMN_NAME, nullable = false)
-    private Integer confirmedRequests;
+    //    @Column(name = CONFIRMED_REQUESTS_COLUMN_NAME, nullable = false)
+//    private Integer confirmedRequests;
     @Column(name = CREATED_ON_COLUMN_NAME, nullable = false)
     private LocalDateTime createdOn;
     @Column(name = DESCRIPTION_ON_COLUMN_NAME, nullable = false)

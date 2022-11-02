@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.ewm_ms.util.CommonValidMarker;
 import ru.practicum.ewm_ms.util.PatchValidMarker;
 

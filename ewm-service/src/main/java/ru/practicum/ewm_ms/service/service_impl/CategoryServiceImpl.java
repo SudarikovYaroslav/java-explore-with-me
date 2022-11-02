@@ -11,7 +11,6 @@ import ru.practicum.ewm_ms.exception.ForbiddenException;
 import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.mappers.CategoryMapper;
 import ru.practicum.ewm_ms.model.Category;
-import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.repository.CategoryRepository;
 import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.service.CategoryService;

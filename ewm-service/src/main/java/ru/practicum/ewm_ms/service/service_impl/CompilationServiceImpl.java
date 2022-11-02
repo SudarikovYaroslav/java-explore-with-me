@@ -15,6 +15,7 @@ import ru.practicum.ewm_ms.model.Compilation;
 import ru.practicum.ewm_ms.repository.CompEventsRepository;
 import ru.practicum.ewm_ms.repository.CompilationRepository;
 import ru.practicum.ewm_ms.repository.EventRepository;
+import ru.practicum.ewm_ms.repository.ParticipationRepository;
 import ru.practicum.ewm_ms.service.CompilationService;
 import ru.practicum.ewm_ms.util.Util;
 
@@ -29,6 +30,7 @@ import static ru.practicum.ewm_ms.util.Util.checkIfEventExists;
 @Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
 
+    private final ParticipationRepository participationRepository;
     private final CompilationRepository compilationRepo;
     private final CompEventsRepository compEventsRepo;
     private final EventRepository eventRepo;
@@ -45,7 +47,8 @@ public class CompilationServiceImpl implements CompilationService {
         }
         return compilations
                 .stream()
-                .map((Compilation compilation) -> CompilationMapper.toResponseDto(compilation, client))
+                .map((Compilation compilation) -> CompilationMapper.toResponseDto(compilation, client,
+                        participationRepository))
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +57,7 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = compilationRepo.findById(compId)
                 .orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
 
-        return CompilationMapper.toResponseDto(compilation, client);
+        return CompilationMapper.toResponseDto(compilation, client, participationRepository);
     }
 
     @Override
@@ -62,7 +65,7 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationResponseDto addNewCompilation(CompilationPostDto dto) {
         Compilation compilation = CompilationMapper.toModel(dto, eventRepo);
         compilation = compilationRepo.save(compilation);
-        return CompilationMapper.toResponseDto(compilation, client);
+        return CompilationMapper.toResponseDto(compilation, client, participationRepository);
     }
 
     @Override

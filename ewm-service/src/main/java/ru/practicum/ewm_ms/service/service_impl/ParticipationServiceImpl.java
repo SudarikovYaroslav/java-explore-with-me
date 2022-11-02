@@ -54,7 +54,8 @@ public class ParticipationServiceImpl implements ParticipationService {
         if (!event.getState().equals(PublicationState.PUBLISHED)) {
             throw new ForbiddenException("you cannot take part in an unpublished event");
         }
-        if (event.getParticipantLimit() != 0 && event.getConfirmedRequests() >= event.getParticipantLimit()) {
+        int confirmedRequests = participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED);
+        if (event.getParticipantLimit() != 0 && confirmedRequests >= event.getParticipantLimit()) {
             throw new ForbiddenException("the limit of participants in the event has been reached");
         }
 

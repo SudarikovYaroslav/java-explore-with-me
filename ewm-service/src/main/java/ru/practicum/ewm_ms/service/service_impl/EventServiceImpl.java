@@ -50,7 +50,7 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
         addHitForEach(endpoint, clientIp, events, client); // модифицировать для сохранения для server-stats
         return events.stream()
-                .map((Event event) -> EventMapper.toEventShortDto(event, client))
+                .map((Event event) -> EventMapper.toEventShortDto(event, client, participationRepo))
                 .collect(Collectors.toList());
     }
 
@@ -62,7 +62,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException(Util.getEventNotFoundMessage(id));
         }
         addHit(endpoint, clientIp, id, client);
-        return EventMapper.toEventDetailedDto(event, client);
+        return EventMapper.toEventDetailedDto(event, client, participationRepo);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepo.findAllByInitiatorId(userId, pageable);
         return events.stream()
-                .map((Event event) -> EventMapper.toEventShortDto(event, client))
+                .map((Event event) -> EventMapper.toEventShortDto(event, client, participationRepo))
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +89,7 @@ public class EventServiceImpl implements EventService {
             event.setState(PublicationState.PENDING);
         }
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client);
+        return EventMapper.toEventDetailedDto(event, client, participationRepo);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class EventServiceImpl implements EventService {
         Location location = locationRepository.save(event.getLocation());
         event.setLocation(location);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client);
+        return EventMapper.toEventDetailedDto(event, client, participationRepo);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class EventServiceImpl implements EventService {
         if (event == null) {
             throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
         }
-        return EventMapper.toEventDetailedDto(event, client);
+        return EventMapper.toEventDetailedDto(event, client, participationRepo);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class EventServiceImpl implements EventService {
         }
         event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client);
+        return EventMapper.toEventDetailedDto(event, client, participationRepo);
     }
 
     @Override
@@ -149,7 +149,8 @@ public class EventServiceImpl implements EventService {
         if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             throw new ForbiddenException("Confirmation of the participation is not required");
         }
-        if (event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+        if (event.getParticipantLimit().equals(participationRepo
+                .getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED))) {
             throw new ForbiddenException("the limit of participants in the event has been reached");
         }
 
@@ -157,11 +158,10 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException(Util.getParticipationNotFoundMessage(reqId)));
 
         if (participation.getState().equals(ParticipationState.CONFIRMED)) {
-           throw new  ForbiddenException("the request for participation has already been confirmed");
+            throw new ForbiddenException("the request for participation has already been confirmed");
         }
 
         participation.setState(ParticipationState.CONFIRMED);
-        increaseConfirmedRequest(event, eventRepo);
         checkParticipationLimit(event, participationRepo);
         participation = participationRepo.save(participation);
         return ParticipationMapper.toDto(participation);
@@ -190,7 +190,7 @@ public class EventServiceImpl implements EventService {
         Specification<Event> specification = getSpecification(params, false);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
         return events.stream()
-                .map((Event event) -> EventMapper.toEventDetailedDto(event, client))
+                .map((Event event) -> EventMapper.toEventDetailedDto(event, client, participationRepo))
                 .collect(Collectors.toList());
     }
 
@@ -228,7 +228,7 @@ public class EventServiceImpl implements EventService {
             editable.setTitle(dto.getTitle());
         }
         editable = eventRepo.save(editable);
-        return EventMapper.toEventDetailedDto(editable, client);
+        return EventMapper.toEventDetailedDto(editable, client, participationRepo);
     }
 
     @Override
@@ -246,7 +246,7 @@ public class EventServiceImpl implements EventService {
         event.setPublishedOn(LocalDateTime.now());
         event.setState(PublicationState.PUBLISHED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client);
+        return EventMapper.toEventDetailedDto(event, client, participationRepo);
     }
 
     @Override
@@ -259,7 +259,7 @@ public class EventServiceImpl implements EventService {
         }
         event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client);
+        return EventMapper.toEventDetailedDto(event, client, participationRepo);
     }
 
     private void addHit(String endpoint, String clientIp, Long eventId, EventClient client) {

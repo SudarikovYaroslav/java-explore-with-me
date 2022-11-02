@@ -9,6 +9,7 @@ import ru.practicum.ewm_ms.dto.event.EventShortDto;
 import ru.practicum.ewm_ms.model.Compilation;
 import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.repository.EventRepository;
+import ru.practicum.ewm_ms.repository.ParticipationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +25,11 @@ public class CompilationMapper {
                 .build();
     }
 
-    public static CompilationResponseDto toResponseDto(Compilation compilation, EventClient client) {
+    public static CompilationResponseDto toResponseDto(Compilation compilation,
+                                                       EventClient client,
+                                                       ParticipationRepository repo) {
         return CompilationResponseDto.builder()
-                .events(replaceEventsWithEventShortDto(compilation.getEvents(), client))
+                .events(replaceEventsWithEventShortDto(compilation.getEvents(), client, repo))
                 .id(compilation.getId())
                 .pinned(compilation.getPinned())
                 .title(compilation.getTitle())
@@ -37,10 +40,12 @@ public class CompilationMapper {
         return repo.findAll(ids);
     }
 
-    private static List<EventShortDto> replaceEventsWithEventShortDto(List<Event> events, EventClient client) {
+    private static List<EventShortDto> replaceEventsWithEventShortDto(List<Event> events,
+                                                                      EventClient client,
+                                                                      ParticipationRepository repo) {
         List<EventShortDto> dtos = new ArrayList<>();
         for (Event ev : events) {
-            dtos.add(EventMapper.toEventShortDto(ev, client));
+            dtos.add(EventMapper.toEventShortDto(ev, client, repo));
         }
         return dtos;
     }

@@ -29,12 +29,12 @@ public class HitMapper {
         return hit;
     }
 
-    public static  HitResponseDto toDto(Hit hit, HitRepository repo) {
+    public static HitResponseDto toDto(Hit hit, HitRepository repo) {
         return HitResponseDto.builder()
                 .app(hit.getApp().getName())
                 .uri(hit.getUri())
                 .hits(repo.getCountHits(hit.getUri()))
-                .event_id(hit.getEventId())
+                .eventId(hit.getEventId())
                 .build();
     }
 }
