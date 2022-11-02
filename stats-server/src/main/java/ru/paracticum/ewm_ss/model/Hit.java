@@ -23,8 +23,8 @@ public class Hit {
     @Column(name = ID_COLUMN_NAME)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hitId;
-    @ManyToOne
-    @JoinColumn(name = APP_COLUMN_NAME)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = APP_COLUMN_NAME, nullable = false)
     private App app;
     @Column(name = URI_COLUMN_NAME)
     private String uri;

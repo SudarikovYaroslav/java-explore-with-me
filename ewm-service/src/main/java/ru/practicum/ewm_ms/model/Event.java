@@ -36,8 +36,8 @@ public class Event {
     private Long id;
     @Column(name = ANNOTATION_COLUMN_NAME, nullable = false)
     private String annotation;
-    @ManyToOne
-    @JoinColumn(name = CATEGORY_COLUMN_NAME)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = CATEGORY_COLUMN_NAME, nullable = false)
     private Category category;
     @Column(name = CONFIRMED_REQUESTS_COLUMN_NAME, nullable = false)
     private Integer confirmedRequests;
@@ -47,11 +47,11 @@ public class Event {
     private String description;
     @Column(name = EVENT_DATE_COLUMN_NAME, nullable = false)
     private LocalDateTime eventDate;
-    @ManyToOne
-    @JoinColumn(name = INITIATOR_COLUMN_NAME)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = INITIATOR_COLUMN_NAME, nullable = false)
     private User initiator;
-    @ManyToOne
-    @JoinColumn(name = LOCATION_COLUMN_NAME)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = LOCATION_COLUMN_NAME, nullable = false)
     private Location location;
     @Column(name = PAID_COLUMN_NAME)
     private Boolean paid;
