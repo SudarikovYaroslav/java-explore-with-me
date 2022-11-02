@@ -77,14 +77,12 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Override
     @Transactional
-    public ParticipationDto cancelParticipation(Long userId, Long requestId) {
-        checkIfUserExists(userId, userRepo);
-        Participation participation = participationRepo
-                .findById(requestId).orElseThrow(() -> new NotFoundException(
-                        Util.getParticipationNotFoundMessage(requestId))
-                );
+    public ParticipationDto cancelParticipation(Long requesterId, Long requestId) {
+        checkIfUserExists(requesterId, userRepo);
+        Participation participation = participationRepo.findByRequesterIdAndId(requesterId, requestId)
+                .orElseThrow(() -> new NotFoundException("Participation not found requesterId: "
+                        + requesterId + " requestId: " + requestId));
         participation.setState(ParticipationState.CANCELED);
-        participation = participationRepo.save(participation);
         return ParticipationMapper.toDto(participation);
     }
 }

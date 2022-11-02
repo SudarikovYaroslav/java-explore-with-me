@@ -25,11 +25,13 @@ public class Participation {
     private Long id;
     @Column(name = CREATED_COLUMN_NAME, nullable = false)
     private LocalDateTime created;
-    @ManyToOne
-    @JoinColumn(name = EVENT_ID_COLUMN_NAME)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = EVENT_ID_COLUMN_NAME, nullable = false)
     private Event event;
-    @ManyToOne
-    @JoinColumn(name = REQUESTER_ID_COLUMN_NAME)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = REQUESTER_ID_COLUMN_NAME, nullable = false)
     private User requester;
+    @Enumerated(EnumType.STRING)
+    @Column(name = STATE_COLUMN_NAME, nullable = false)
     private ParticipationState state;
 }
