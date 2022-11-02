@@ -11,5 +11,4 @@ public class HitResponseDto {
     private String app;
     private String uri;
     private Long hits;
-    private Long eventId;
 }

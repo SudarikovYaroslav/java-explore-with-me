@@ -34,7 +34,6 @@ public class HitMapper {
                 .app(hit.getApp().getName())
                 .uri(hit.getUri())
                 .hits(repo.getCountHits(hit.getUri()))
-                .eventId(hit.getEventId())
                 .build();
     }
 }

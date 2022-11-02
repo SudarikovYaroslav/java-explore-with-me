@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -27,6 +26,5 @@ public class HitPostDto {
     @Length(min = MIN_IP_LENGTH, max = MAX_IP_LENGTH)
     private String ip;
     private String timeStamp;
-    @NotNull
     private Long eventId;
 }
