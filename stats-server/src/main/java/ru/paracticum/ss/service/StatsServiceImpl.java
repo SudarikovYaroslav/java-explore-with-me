@@ -37,6 +37,7 @@ public class StatsServiceImpl implements StatsService {
         hitRepo.save(hit);
     }
 
+    // TODO оптимизировать запросы к БД
     @Override
     public List<HitResponseDto> getHits(HitSearchParams params) {
         Specification<Hit> specification = getSpecification(params);

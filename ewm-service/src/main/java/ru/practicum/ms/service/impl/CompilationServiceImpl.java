@@ -64,6 +64,7 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toResponseDto(compilation, eventDtos);
     }
 
+    // TODO оптимизировать запросы к БД
     @Override
     @Transactional
     public CompilationResponseDto addNewCompilation(CompilationPostDto dto) {
@@ -85,13 +86,13 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepo.deleteById(compId);
     }
 
+    // TODO разобраться с методом
     @Override
     @Transactional
     public void deleteEventFromCompilation(Long compId, Long eventId) {
         compilationRepo
                 .findById(compId).orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
         eventRepo.findById(eventId).orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
-        CompEvent compEvent = new CompEvent(compId, eventId);
         compEventsRepo.deleteByCompilationIdAndEventId(compId, eventId);
     }
 
@@ -121,6 +122,7 @@ public class CompilationServiceImpl implements CompilationService {
         compilation.setPinned(true);
     }
 
+    // TODO оптимизировать запросы к БД
     private List<EventShortDto> getEventShortDtos(Compilation compilation) {
         return compilation.getEvents().stream()
                 .map((Event event) -> EventMapper.toEventShortDto(event,

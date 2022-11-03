@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findUsers(List<Long> ids, Integer from, Integer size) {
         List<User> users;
-
         if (ids != null) {
             users = userRepository.findAllById(ids);
         } else {

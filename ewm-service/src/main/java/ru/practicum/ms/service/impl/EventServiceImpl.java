@@ -41,6 +41,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepo;
     private final EventClient client;
 
+    // TODO оптимизировать запросы к БД
     @Override
     @Transactional
     public List<EventShortDto> getEvents(EventSearchParams params, String clientIp, String endpoint) {
@@ -48,7 +49,7 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize(), sort);
         Specification<Event> specification = getSpecification(params, true);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
-        addHitForEach(endpoint, clientIp, events, client); // модифицировать для сохранения для server-stats
+        addHitForEach(endpoint, clientIp, events, client);
         return events.stream()
                 .map((Event event) -> EventMapper.toEventShortDto(
                         event,
@@ -56,6 +57,7 @@ public class EventServiceImpl implements EventService {
                         client.getViewsByEventId(event.getId()).getBody()))
                 .collect(Collectors.toList());
     }
+
 
     @Override
     @Transactional
@@ -67,6 +69,7 @@ public class EventServiceImpl implements EventService {
                 client.getViewsByEventId(event.getId()).getBody());
     }
 
+    // TODO оптимизировать запросы к БД
     @Override
     public List<EventShortDto> findEventsByInitiatorId(Long userId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
@@ -131,10 +134,9 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventDetailedDto cancelEventByIdAndOwnerId(Long userId, Long eventId) {
-        Event event = eventRepo.findByIdAndInitiatorId(eventId, userId).orElse(null);
-        if (event == null) {
-            throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
-        }
+        Event event = eventRepo.findByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
+
         if (!event.getState().equals(PublicationState.PENDING)) {
             throw new ForbiddenException("the event can only be canceled in the waiting state, current state: "
                     + event.getState());
@@ -148,10 +150,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<ParticipationDto> getInfoAboutEventParticipation(Long userId, Long eventId) {
-        Event event = eventRepo.findByIdAndInitiatorId(eventId, userId).orElse(null);
-        if (event == null) {
-            throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
-        }
+        eventRepo.findByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
         List<Participation> participations = participationRepo.findAllByEventId(eventId);
         return participations.stream().map(ParticipationMapper::toDto).collect(Collectors.toList());
     }
@@ -200,6 +200,7 @@ public class EventServiceImpl implements EventService {
         return ParticipationMapper.toDto(participation);
     }
 
+    // TODO оптимизировать запросы к БД
     @Override
     public List<EventDetailedDto> findEventsByConditions(EventSearchParams params) {
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize());
