@@ -8,10 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm_ms.client.EventClient;
 import ru.practicum.ewm_ms.dto.compilation.CompilationPostDto;
 import ru.practicum.ewm_ms.dto.compilation.CompilationResponseDto;
+import ru.practicum.ewm_ms.dto.event.EventShortDto;
 import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.mappers.CompilationMapper;
+import ru.practicum.ewm_ms.mappers.EventMapper;
 import ru.practicum.ewm_ms.model.CompEvent;
 import ru.practicum.ewm_ms.model.Compilation;
+import ru.practicum.ewm_ms.model.Event;
+import ru.practicum.ewm_ms.model.ParticipationState;
 import ru.practicum.ewm_ms.repository.CompEventsRepository;
 import ru.practicum.ewm_ms.repository.CompilationRepository;
 import ru.practicum.ewm_ms.repository.EventRepository;
@@ -22,15 +26,12 @@ import ru.practicum.ewm_ms.util.Util;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm_ms.util.Util.checkIfCompilationExists;
-import static ru.practicum.ewm_ms.util.Util.checkIfEventExists;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CompilationServiceImpl implements CompilationService {
 
-    private final ParticipationRepository participationRepository;
+    private final ParticipationRepository participationRepo;
     private final CompilationRepository compilationRepo;
     private final CompEventsRepository compEventsRepo;
     private final EventRepository eventRepo;
@@ -45,10 +46,12 @@ public class CompilationServiceImpl implements CompilationService {
         } else {
             compilations = compilationRepo.findAll(pageable).toList();
         }
+
         return compilations
                 .stream()
-                .map((Compilation compilation) -> CompilationMapper.toResponseDto(compilation, client,
-                        participationRepository))
+                .map((Compilation compilation) -> CompilationMapper.toResponseDto(
+                        compilation, getEventShortDtos(compilation)
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -57,15 +60,23 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = compilationRepo.findById(compId)
                 .orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
 
-        return CompilationMapper.toResponseDto(compilation, client, participationRepository);
+        List<EventShortDto> eventDtos = getEventShortDtos(compilation);
+        return CompilationMapper.toResponseDto(compilation, eventDtos);
     }
 
     @Override
     @Transactional
     public CompilationResponseDto addNewCompilation(CompilationPostDto dto) {
-        Compilation compilation = CompilationMapper.toModel(dto, eventRepo);
+        List<Event> events = eventRepo.findAll(dto.getEvents());
+        Compilation compilation = CompilationMapper.toModel(dto, events);
         compilation = compilationRepo.save(compilation);
-        return CompilationMapper.toResponseDto(compilation, client, participationRepository);
+
+        List<EventShortDto> eventDtos = events.stream()
+                .map((Event event) -> EventMapper.toEventShortDto(event,
+                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
+                        client.getViewsByEventId(event.getId()).getBody()))
+                .collect(Collectors.toList());
+        return CompilationMapper.toResponseDto(compilation, eventDtos);
     }
 
     @Override
@@ -77,16 +88,19 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void deleteEventFromCompilation(Long compId, Long eventId) {
-        checkIfCompilationExists(compId, compilationRepo);
-        checkIfEventExists(eventId, eventRepo);
+        compilationRepo
+                .findById(compId).orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
+        eventRepo.findById(eventId).orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
+        CompEvent compEvent = new CompEvent(compId, eventId);
         compEventsRepo.deleteByCompilationIdAndEventId(compId, eventId);
     }
 
     @Override
     @Transactional
     public void addEventToCompilation(Long compId, Long eventId) {
-        checkIfCompilationExists(compId, compilationRepo);
-        checkIfEventExists(eventId, eventRepo);
+        compilationRepo
+                .findById(compId).orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
+        eventRepo.findById(eventId).orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
         CompEvent compEvent = new CompEvent(compId, eventId);
         compEventsRepo.save(compEvent);
     }
@@ -94,14 +108,27 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public void unpinCompilation(Long compId) {
-        Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
+        Compilation compilation = compilationRepo
+                .findById(compId).orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
         compilation.setPinned(false);
     }
 
     @Override
     @Transactional
     public void pinCompilation(Long compId) {
-        Compilation compilation = checkIfCompilationExists(compId, compilationRepo);
+        Compilation compilation = compilationRepo
+                .findById(compId).orElseThrow(() -> new NotFoundException(Util.getCompilationNotFoundMessage(compId)));
         compilation.setPinned(true);
     }
+
+    private List<EventShortDto> getEventShortDtos(Compilation compilation) {
+        return compilation.getEvents().stream()
+                .map((Event event) -> EventMapper.toEventShortDto(event,
+                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
+                        client.getViewsByEventId(event.getId()).getBody()))
+                .collect(Collectors.toList());
+    }
+//    private static List<Event> replaceIdWithEvents(List<Long> ids, EventRepository repo) {
+//        return repo.findAll(ids);
+//    }
 }

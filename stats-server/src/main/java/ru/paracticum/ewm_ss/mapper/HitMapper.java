@@ -6,7 +6,6 @@ import ru.paracticum.ewm_ss.dto.HitPostDto;
 import ru.paracticum.ewm_ss.dto.HitResponseDto;
 import ru.paracticum.ewm_ss.model.App;
 import ru.paracticum.ewm_ss.model.Hit;
-import ru.paracticum.ewm_ss.repository.HitRepository;
 
 import java.time.LocalDateTime;
 
@@ -29,11 +28,11 @@ public class HitMapper {
         return hit;
     }
 
-    public static HitResponseDto toDto(Hit hit, HitRepository repo) {
+    public static HitResponseDto toDto(Hit hit, Long countHits) {
         return HitResponseDto.builder()
                 .app(hit.getApp().getName())
                 .uri(hit.getUri())
-                .hits(repo.getCountHits(hit.getUri()))
+                .hits(countHits)
                 .build();
     }
 }

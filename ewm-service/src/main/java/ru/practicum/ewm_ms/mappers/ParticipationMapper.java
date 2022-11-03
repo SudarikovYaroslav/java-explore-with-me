@@ -4,24 +4,20 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.ewm_ms.dto.ParticipationDto;
 import ru.practicum.ewm_ms.exception.EnumParseException;
-import ru.practicum.ewm_ms.exception.NotFoundException;
 import ru.practicum.ewm_ms.model.Event;
 import ru.practicum.ewm_ms.model.Participation;
 import ru.practicum.ewm_ms.model.ParticipationState;
 import ru.practicum.ewm_ms.model.User;
-import ru.practicum.ewm_ms.repository.EventRepository;
-import ru.practicum.ewm_ms.repository.UserRepository;
-import ru.practicum.ewm_ms.util.Util;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParticipationMapper {
 
-    public static Participation toModel(ParticipationDto dto, EventRepository eventRepo, UserRepository userRepo) {
+    public static Participation toModel(ParticipationDto dto, Event event, User requester) {
         return Participation.builder()
                 .created(DateTimeMapper.toDateTime(dto.getCreated()))
-                .event(getEventById(dto.getEvent(), eventRepo))
+                .event(event)
                 .id(dto.getId())
-                .requester(getUserById(dto.getRequester(), userRepo))
+                .requester(requester)
                 .state(parseApplicationState(dto.getStatus()))
                 .build();
     }
@@ -44,21 +40,5 @@ public class ParticipationMapper {
             throw new EnumParseException("Недопустимое значение статуса заявки" + state);
         }
         return enumState;
-    }
-
-    private static Event getEventById(Long eventId, EventRepository repo) {
-        Event event = repo.findById(eventId).orElse(null);
-        if (event == null) {
-            throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
-        }
-        return event;
-    }
-
-    private static User getUserById(Long userId, UserRepository repo) {
-        User user = repo.findById(userId).orElse(null);
-        if (user == null) {
-            throw new NotFoundException(Util.getUserNotFoundMessage(userId));
-        }
-        return user;
     }
 }

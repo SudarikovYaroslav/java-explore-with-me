@@ -80,51 +80,51 @@ public class EventServiceUtil {
         };
     }
 
-    public static void updateEvent(Event event, EventPatchDto update, CategoryRepository categoryRepo) {
-        if (update.getAnnotation() != null) {
-            event.setAnnotation(update.getAnnotation());
-        }
-        if (update.getCategory() != null) {
-            Category category = Util.checkIfCategoryExists(update.getCategory(), categoryRepo);
-            event.setCategory(category);
-        }
-        if (update.getDescription() != null) {
-            event.setDescription(update.getDescription());
-        }
-        if (update.getEventDate() != null) {
-            if (!isEventDateOk(update.getEventDate())) {
-                throw new ForbiddenException("the event can be changed no later than 2 hours before the start");
-            }
-            event.setEventDate(DateTimeMapper.toDateTime(update.getEventDate()));
-        }
-        if (update.getPaid() != null) {
-            event.setPaid(update.getPaid());
-        }
-        if (update.getParticipantLimit() != null) {
-            event.setParticipantLimit(update.getParticipantLimit());
-        }
-        if (update.getTitle() != null) {
-            event.setTitle(update.getTitle());
-        }
-    }
+//    public static void updateEvent(Event event, EventPatchDto update, CategoryRepository categoryRepo) {
+//        if (update.getAnnotation() != null) {
+//            event.setAnnotation(update.getAnnotation());
+//        }
+//        if (update.getCategory() != null) {
+//            Category category = Util.checkIfCategoryExists(update.getCategory(), categoryRepo);
+//            event.setCategory(category);
+//        }
+//        if (update.getDescription() != null) {
+//            event.setDescription(update.getDescription());
+//        }
+//        if (update.getEventDate() != null) {
+//            if (!isEventDateOk(update.getEventDate())) {
+//                throw new ForbiddenException("the event can be changed no later than 2 hours before the start");
+//            }
+//            event.setEventDate(DateTimeMapper.toDateTime(update.getEventDate()));
+//        }
+//        if (update.getPaid() != null) {
+//            event.setPaid(update.getPaid());
+//        }
+//        if (update.getParticipantLimit() != null) {
+//            event.setParticipantLimit(update.getParticipantLimit());
+//        }
+//        if (update.getTitle() != null) {
+//            event.setTitle(update.getTitle());
+//        }
+//    }
 
     public static boolean isEventDateOk(String eventDate) {
         LocalDateTime date = DateTimeMapper.toDateTime(eventDate);
         return date.isAfter(LocalDateTime.now().plusHours(HOURS_LEFT_BEFORE_EVENT));
     }
 
-    public static void checkParticipationLimit(Event event, ParticipationRepository participationRepo) {
-        if (event.getParticipantLimit().equals(participationRepo
-                .getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED))) {
-            List<Participation> participations = participationRepo
-                    .findAllByEventIdAndState(event.getId(), ParticipationState.PENDING);
-
-            for (Participation par : participations) {
-                par.setState(ParticipationState.REJECTED);
-                participationRepo.save(par);
-            }
-        }
-    }
+//    public static void checkParticipationLimit(Event event, ParticipationRepository participationRepo) {
+//        if (event.getParticipantLimit().equals(participationRepo
+//                .getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED))) {
+//            List<Participation> participations = participationRepo
+//                    .findAllByEventIdAndState(event.getId(), ParticipationState.PENDING);
+//
+//            for (Participation par : participations) {
+//                par.setState(ParticipationState.REJECTED);
+//                participationRepo.save(par);
+//            }
+//        }
+//    }
 
     public static boolean isMayPublish(Event event) {
         return event.getEventDate().isAfter(LocalDateTime.now().plusHours(HOURS_LEFT_AFTER_PUBLICATION));

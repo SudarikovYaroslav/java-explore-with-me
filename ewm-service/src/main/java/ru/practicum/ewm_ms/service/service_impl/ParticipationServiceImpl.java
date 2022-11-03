@@ -12,13 +12,11 @@ import ru.practicum.ewm_ms.repository.EventRepository;
 import ru.practicum.ewm_ms.repository.ParticipationRepository;
 import ru.practicum.ewm_ms.repository.UserRepository;
 import ru.practicum.ewm_ms.service.ParticipationService;
+import ru.practicum.ewm_ms.util.Util;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.practicum.ewm_ms.util.Util.checkIfEventExists;
-import static ru.practicum.ewm_ms.util.Util.checkIfUserExists;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +29,7 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Override
     public List<ParticipationDto> getInfoAboutAllParticipation(Long userId) {
-        checkIfUserExists(userId, userRepo);
+        userRepo.findById(userId).orElseThrow(() -> new NotFoundException(Util.getUserNotFoundMessage(userId)));
         List<Participation> participations = participationRepo.findAllByRequesterId(userId);
         return participations.stream().map(ParticipationMapper::toDto).collect(Collectors.toList());
     }
@@ -39,8 +37,10 @@ public class ParticipationServiceImpl implements ParticipationService {
     @Override
     @Transactional
     public ParticipationDto addParticipationQuery(Long userId, Long eventId) {
-        User user = checkIfUserExists(userId, userRepo);
-        Event event = checkIfEventExists(eventId, eventRepo);
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException(Util.getUserNotFoundMessage(userId)));
+        Event event = eventRepo.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
 
         Participation participation = participationRepo
                 .findByEventIdAndRequesterId(eventId, userId).orElse(null);

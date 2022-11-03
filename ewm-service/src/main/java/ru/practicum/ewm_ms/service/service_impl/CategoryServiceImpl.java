@@ -19,8 +19,6 @@ import ru.practicum.ewm_ms.util.Util;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.ewm_ms.util.Util.isCategoryEmpty;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -67,5 +65,9 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ForbiddenException("Category id: " + catId + " is not empty");
         }
         categoryRepository.deleteById(catId);
+    }
+
+    private boolean isCategoryEmpty(long categoryId, EventRepository eventRepo) {
+        return eventRepo.findAllByCategoryId(categoryId).isEmpty();
     }
 }

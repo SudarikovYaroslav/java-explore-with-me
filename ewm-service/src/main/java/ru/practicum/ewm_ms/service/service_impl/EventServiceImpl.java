@@ -50,19 +50,21 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
         addHitForEach(endpoint, clientIp, events, client); // модифицировать для сохранения для server-stats
         return events.stream()
-                .map((Event event) -> EventMapper.toEventShortDto(event, client, participationRepo))
+                .map((Event event) -> EventMapper.toEventShortDto(
+                        event,
+                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
+                        client.getViewsByEventId(event.getId()).getBody()))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public EventDetailedDto findEventById(Long id, String clientIp, String endpoint) {
-        Event event = eventRepo.findById(id).orElse(null);
-        if (event == null) {
-            throw new NotFoundException(Util.getEventNotFoundMessage(id));
-        }
+        Event event = eventRepo.findById(id).orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(id)));
         addHit(endpoint, clientIp, id, client);
-        return EventMapper.toEventDetailedDto(event, client, participationRepo);
+        return EventMapper.toEventDetailedDto(event,
+                participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
+                client.getViewsByEventId(event.getId()).getBody());
     }
 
     @Override
@@ -70,15 +72,18 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepo.findAllByInitiatorId(userId, pageable);
         return events.stream()
-                .map((Event event) -> EventMapper.toEventShortDto(event, client, participationRepo))
+                .map((Event event) -> EventMapper.toEventShortDto(event,
+                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
+                        client.getViewsByEventId(event.getId()).getBody()))
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
     public EventDetailedDto patchEvent(Long userId, EventPatchDto dto) {
-        Util.checkIfUserExists(userId, userRepo);
-        Event event = Util.checkIfEventExists(dto.getEventId(), eventRepo);
+        userRepo.findById(userId).orElseThrow(() -> new NotFoundException(Util.getUserNotFoundMessage(userId)));
+        Event event = eventRepo.findById(dto.getEventId())
+                .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(dto.getEventId())));
 
         if (event.getState().equals(PublicationState.PUBLISHED)) {
             throw new ForbiddenException("Only pending or canceled events can be changed");
@@ -89,7 +94,9 @@ public class EventServiceImpl implements EventService {
             event.setState(PublicationState.PENDING);
         }
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client, participationRepo);
+        return EventMapper.toEventDetailedDto(event,
+                participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
+                client.getViewsByEventId(event.getId()).getBody());
     }
 
     @Override
@@ -98,20 +105,27 @@ public class EventServiceImpl implements EventService {
         if (!isEventDateOk(dto.getEventDate())) {
             throw new ForbiddenException("the event cannot be earlier than 2 hours from the current time");
         }
-        Event event = EventMapper.toModel(dto, userId, categoryRepo, userRepo);
+        User initiator = userRepo
+                .findById(userId).orElseThrow(() -> new NotFoundException(Util.getUserNotFoundMessage(userId)));
+        Category category = categoryRepo.findById(dto.getCategory())
+                .orElseThrow(() -> new NotFoundException(Util.getCategoryNotFoundMessage(dto.getCategory())));
+
+        Event event = EventMapper.toModel(dto, initiator, category);
         Location location = locationRepository.save(event.getLocation());
         event.setLocation(location);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client, participationRepo);
+        Integer confirmedRequests = participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED);
+        Long views = client.getViewsByEventId(event.getId()).getBody();
+        return EventMapper.toEventDetailedDto(event, confirmedRequests, views);
     }
 
     @Override
     public EventDetailedDto findEventByIdAndOwnerId(Long userId, Long eventId) {
-        Event event = eventRepo.findByIdAndInitiatorId(eventId, userId).orElse(null);
-        if (event == null) {
-            throw new NotFoundException(Util.getEventNotFoundMessage(eventId));
-        }
-        return EventMapper.toEventDetailedDto(event, client, participationRepo);
+        Event event = eventRepo.findByIdAndInitiatorId(eventId,
+                userId).orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
+        Integer confirmedRequests = participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED);
+        Long views = client.getViewsByEventId(event.getId()).getBody();
+        return EventMapper.toEventDetailedDto(event, confirmedRequests, views);
     }
 
     @Override
@@ -127,7 +141,9 @@ public class EventServiceImpl implements EventService {
         }
         event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client, participationRepo);
+        Integer confirmedRequests = participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED);
+        Long views = client.getViewsByEventId(event.getId()).getBody();
+        return EventMapper.toEventDetailedDto(event, confirmedRequests, views);
     }
 
     @Override
@@ -190,7 +206,9 @@ public class EventServiceImpl implements EventService {
         Specification<Event> specification = getSpecification(params, false);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
         return events.stream()
-                .map((Event event) -> EventMapper.toEventDetailedDto(event, client, participationRepo))
+                .map((Event event) -> EventMapper.toEventDetailedDto(event,
+                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
+                        client.getViewsByEventId(event.getId()).getBody()))
                 .collect(Collectors.toList());
     }
 
@@ -204,7 +222,9 @@ public class EventServiceImpl implements EventService {
             editable.setAnnotation(dto.getAnnotation());
         }
         if (dto.getCategory() != null) {
-            editable.setCategory(Util.mapIdToCategory(dto.getCategory(), categoryRepo));
+            Category category = categoryRepo.findById(dto.getCategory())
+                    .orElseThrow(() -> new NotFoundException(Util.getCategoryNotFoundMessage(dto.getCategory())));
+            editable.setCategory(category);
         }
         if (dto.getDescription() != null) {
             editable.setDescription(dto.getDescription());
@@ -228,7 +248,10 @@ public class EventServiceImpl implements EventService {
             editable.setTitle(dto.getTitle());
         }
         editable = eventRepo.save(editable);
-        return EventMapper.toEventDetailedDto(editable, client, participationRepo);
+        Integer confirmedRequests = participationRepo
+                .getConfirmedRequests(editable.getId(), ParticipationState.CONFIRMED);
+        Long views = client.getViewsByEventId(editable.getId()).getBody();
+        return EventMapper.toEventDetailedDto(editable, confirmedRequests, views);
     }
 
     @Override
@@ -246,7 +269,9 @@ public class EventServiceImpl implements EventService {
         event.setPublishedOn(LocalDateTime.now());
         event.setState(PublicationState.PUBLISHED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client, participationRepo);
+        Integer confirmedRequests = participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED);
+        Long views = client.getViewsByEventId(event.getId()).getBody();
+        return EventMapper.toEventDetailedDto(event, confirmedRequests, views);
     }
 
     @Override
@@ -259,7 +284,9 @@ public class EventServiceImpl implements EventService {
         }
         event.setState(PublicationState.CANCELED);
         event = eventRepo.save(event);
-        return EventMapper.toEventDetailedDto(event, client, participationRepo);
+        Integer confirmedRequests = participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED);
+        Long views = client.getViewsByEventId(event.getId()).getBody();
+        return EventMapper.toEventDetailedDto(event, confirmedRequests, views);
     }
 
     private void addHit(String endpoint, String clientIp, Long eventId, EventClient client) {
@@ -271,4 +298,68 @@ public class EventServiceImpl implements EventService {
             addHit(endpoint, clientIp, event.getId(), client);
         }
     }
+
+    private void updateEvent(Event event, EventPatchDto update, CategoryRepository categoryRepo) {
+        if (update.getAnnotation() != null) {
+            event.setAnnotation(update.getAnnotation());
+        }
+        if (update.getCategory() != null) {
+            Category category = categoryRepo.findById((update.getCategory()))
+                    .orElseThrow(() -> new NotFoundException(Util.getCategoryNotFoundMessage(update.getCategory())));
+            event.setCategory(category);
+        }
+        if (update.getDescription() != null) {
+            event.setDescription(update.getDescription());
+        }
+        if (update.getEventDate() != null) {
+            if (!isEventDateOk(update.getEventDate())) {
+                throw new ForbiddenException("the event can be changed no later than 2 hours before the start");
+            }
+            event.setEventDate(DateTimeMapper.toDateTime(update.getEventDate()));
+        }
+        if (update.getPaid() != null) {
+            event.setPaid(update.getPaid());
+        }
+        if (update.getParticipantLimit() != null) {
+            event.setParticipantLimit(update.getParticipantLimit());
+        }
+        if (update.getTitle() != null) {
+            event.setTitle(update.getTitle());
+        }
+    }
+
+    private void checkParticipationLimit(Event event, ParticipationRepository participationRepo) {
+        if (event.getParticipantLimit().equals(participationRepo
+                .getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED))) {
+            List<Participation> participations = participationRepo
+                    .findAllByEventIdAndState(event.getId(), ParticipationState.PENDING);
+
+            for (Participation par : participations) {
+                par.setState(ParticipationState.REJECTED);
+                participationRepo.save(par);
+            }
+        }
+    }
+
+//    private Category matchCategory(Long id) {
+//        Category category = categoryRepo.findById(id).orElse(null);
+//        if (category == null) {
+//            throw new NotFoundException(Util.getCategoryNotFoundMessage(id));
+//        }
+//        return category;
+//    }
+//
+//    private User matchUser(Long userId) {
+//        User user = userRepo.findById(userId).orElse(null);
+//        if (user == null) {
+//            throw new NotFoundException(Util.getUserNotFoundMessage(userId));
+//        }
+//        return user;
+//    }
+//
+//    public static Event checkIfEventExists(Long eventId, EventRepository repo) {
+//        Event event = repo.findById(eventId)
+//                .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(eventId)));
+//        return event;
+//    }
 }

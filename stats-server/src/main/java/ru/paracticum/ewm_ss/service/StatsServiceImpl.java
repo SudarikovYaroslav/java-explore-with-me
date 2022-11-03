@@ -41,7 +41,9 @@ public class StatsServiceImpl implements StatsService {
     public List<HitResponseDto> getHits(HitSearchParams params) {
         Specification<Hit> specification = getSpecification(params);
         List<Hit> hits = hitRepo.findAll(specification);
-        return hits.stream().map((hit -> HitMapper.toDto(hit, hitRepo))).collect(Collectors.toList());
+        return hits.stream()
+                .map((hit -> HitMapper.toDto(hit, hitRepo.getCountHits(hit.getUri()))))
+                .collect(Collectors.toList());
     }
 
     @Override
