@@ -1,5 +1,6 @@
 package ru.paracticum.ss.service;
 
+import ru.paracticum.ss.dto.BoxDto;
 import ru.paracticum.ss.dto.HitPostDto;
 import ru.paracticum.ss.dto.HitResponseDto;
 import ru.paracticum.ss.model.HitSearchParams;
@@ -12,4 +13,6 @@ public interface StatsService {
     List<HitResponseDto> getHits(HitSearchParams params);
 
     Long getViewsByEventId(Long eventId);
+
+    BoxDto getViewsByEventIds(List<String> eventIds);
 }

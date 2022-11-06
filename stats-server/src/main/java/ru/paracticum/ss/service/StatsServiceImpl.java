@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.paracticum.ss.dto.BoxDto;
 import ru.paracticum.ss.dto.HitPostDto;
 import ru.paracticum.ss.dto.HitResponseDto;
+import ru.paracticum.ss.dto.UtilDto;
 import ru.paracticum.ss.mapper.HitMapper;
 import ru.paracticum.ss.model.App;
 import ru.paracticum.ss.model.Hit;
@@ -37,19 +39,44 @@ public class StatsServiceImpl implements StatsService {
         hitRepo.save(hit);
     }
 
-    // TODO оптимизировать запросы к БД
     @Override
     public List<HitResponseDto> getHits(HitSearchParams params) {
         Specification<Hit> specification = getSpecification(params);
         List<Hit> hits = hitRepo.findAll(specification);
-        return hits.stream()
-                .map((hit -> HitMapper.toDto(hit, hitRepo.getCountHits(hit.getUri()))))
-                .collect(Collectors.toList());
+        List<String> uris = hits.stream().map(Hit::getUri).collect(Collectors.toList());
+        List<UtilDto> hitCounts = hitRepo.getContHitsByUris(uris);
+        return mapHitsWichCountHits(hits, hitCounts);
+    }
+
+    private List<HitResponseDto> mapHitsWichCountHits(List<Hit> hits, List<UtilDto> hitCounts) {
+        List<HitResponseDto> result = new ArrayList<>();
+        for (Hit hit : hits) {
+            UtilDto hitCount = hitCounts.stream()
+                    .filter(utilDto -> utilDto.getEntityId().equals(hit.getHitId()))
+                    .findFirst()
+                    .orElse(null);
+            assert hitCount != null;
+            result.add(HitMapper.toDto(hit, hitCount.getCount()));
+        }
+        return result;
     }
 
     @Override
     public Long getViewsByEventId(Long eventId) {
         return hitRepo.getCountHitsByEventId(eventId);
+    }
+
+    @Override
+    public BoxDto getViewsByEventIds(List<String> ids) {
+        List<Long> eventIds = mapUtilDtoList(ids);
+        List<UtilDto> utilDtos = hitRepo.getCountHitsByEventIds(eventIds);
+        return new BoxDto(utilDtos);
+    }
+
+    private List<Long> mapUtilDtoList(List<String> ids) {
+        return ids.stream()
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
     }
 
     private Specification<Hit> getSpecification(HitSearchParams params) {

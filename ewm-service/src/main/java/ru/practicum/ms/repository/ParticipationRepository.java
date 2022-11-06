@@ -2,6 +2,7 @@ package ru.practicum.ms.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.practicum.ms.client.dto.UtilDto;
 import ru.practicum.ms.model.Participation;
 import ru.practicum.ms.model.ParticipationState;
 
@@ -21,4 +22,9 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
 
     @Query("select count(p) from participations as p where p.event.id = ?1 and p.state = ?2")
     int getConfirmedRequests(Long eventId, ParticipationState state);
+
+    // TODO мегакрутой запрос
+    @Query("select new ru.practicum.ms.client.dto.UtilDto(p.event.id, count(p)) " +
+            "from participations as p where p.event.id in ?1 and p.state = ?2 group by p.event.id")
+    List<UtilDto> countParticipationByEventIds(List<Long> eventIds, ParticipationState state);
 }

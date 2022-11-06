@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ms.client.EventClient;
+import ru.practicum.ms.client.dto.UtilDto;
 import ru.practicum.ms.dto.ParticipationDto;
 import ru.practicum.ms.dto.event.EventDetailedDto;
 import ru.practicum.ms.dto.event.EventPatchDto;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.ms.util.EventServiceUtil.*;
+import static ru.practicum.ms.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +43,6 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepo;
     private final EventClient client;
 
-    // TODO оптимизировать запросы к БД
     @Override
     @Transactional
     public List<EventShortDto> getEvents(EventSearchParams params, String clientIp, String endpoint) {
@@ -50,14 +51,8 @@ public class EventServiceImpl implements EventService {
         Specification<Event> specification = getSpecification(params, true);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
         addHitForEach(endpoint, clientIp, events, client);
-        return events.stream()
-                .map((Event event) -> EventMapper.toEventShortDto(
-                        event,
-                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
-                        client.getViewsByEventId(event.getId()).getBody()))
-                .collect(Collectors.toList());
+        return prepareDataAndGetEventShortDtoList(events);
     }
-
 
     @Override
     @Transactional
@@ -69,16 +64,11 @@ public class EventServiceImpl implements EventService {
                 client.getViewsByEventId(event.getId()).getBody());
     }
 
-    // TODO оптимизировать запросы к БД
     @Override
     public List<EventShortDto> findEventsByInitiatorId(Long userId, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepo.findAllByInitiatorId(userId, pageable);
-        return events.stream()
-                .map((Event event) -> EventMapper.toEventShortDto(event,
-                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
-                        client.getViewsByEventId(event.getId()).getBody()))
-                .collect(Collectors.toList());
+        return prepareDataAndGetEventShortDtoList(events);
     }
 
     @Override
@@ -200,16 +190,22 @@ public class EventServiceImpl implements EventService {
         return ParticipationMapper.toDto(participation);
     }
 
-    // TODO оптимизировать запросы к БД
     @Override
     public List<EventDetailedDto> findEventsByConditions(EventSearchParams params) {
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize());
         Specification<Event> specification = getSpecification(params, false);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();
+
+        List<Long> eventIds = getEventIdsList(events);
+        List<UtilDto> confirmedReqEventIdRelations = participationRepo
+                .countParticipationByEventIds(eventIds, ParticipationState.CONFIRMED);
+        List<UtilDto> viewsEventIdRelations = client.getViewsByEventIds(eventIds);
+
         return events.stream()
-                .map((Event event) -> EventMapper.toEventDetailedDto(event,
-                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
-                        client.getViewsByEventId(event.getId()).getBody()))
+                .map((Event event) -> EventMapper.toEventDetailedDto(
+                        event,
+                        matchIntValueByEventId(confirmedReqEventIdRelations, event.getId()),
+                        matchLongValueByEventId(viewsEventIdRelations, event.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -340,5 +336,18 @@ public class EventServiceImpl implements EventService {
                 participationRepo.save(par);
             }
         }
+    }
+
+    private List<EventShortDto> prepareDataAndGetEventShortDtoList(List<Event> events) {
+        List<Long> eventIds = getEventIdsList(events);
+        List<UtilDto> confirmedReqEventIdRelations = participationRepo
+                .countParticipationByEventIds(eventIds, ParticipationState.CONFIRMED);
+        List<UtilDto> viewsEventIdRelations = client.getViewsByEventIds(eventIds);
+        return events.stream()
+                .map((Event event) -> EventMapper.toEventShortDto(
+                        event,
+                        matchIntValueByEventId(confirmedReqEventIdRelations, event.getId()),
+                        matchLongValueByEventId(viewsEventIdRelations, event.getId())))
+                .collect(Collectors.toList());
     }
 }

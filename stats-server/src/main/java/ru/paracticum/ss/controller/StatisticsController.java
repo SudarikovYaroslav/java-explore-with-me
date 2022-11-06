@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.paracticum.ss.dto.BoxDto;
 import ru.paracticum.ss.dto.HitPostDto;
 import ru.paracticum.ss.dto.HitResponseDto;
 import ru.paracticum.ss.model.HitSearchParams;
@@ -46,6 +47,13 @@ public class StatisticsController {
     @GetMapping("/views/{eventId}")
     public Long getViewsByEventId(@Positive
                                   @PathVariable Long eventId) {
+        log.info("Получение количества просмотров для события id: {}", eventId);
         return statsService.getViewsByEventId(eventId);
+    }
+
+    @GetMapping("/views")
+    public BoxDto getViewsByEventIds(@RequestParam List<String> ids) {
+        log.info("Получение количества просмотров для событий: {}", ids.toString());
+        return statsService.getViewsByEventIds(ids);
     }
 }

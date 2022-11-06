@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ms.client.EventClient;
+import ru.practicum.ms.client.dto.UtilDto;
 import ru.practicum.ms.dto.compilation.CompilationPostDto;
 import ru.practicum.ms.dto.compilation.CompilationResponseDto;
 import ru.practicum.ms.dto.event.EventShortDto;
@@ -25,6 +26,8 @@ import ru.practicum.ms.util.Util;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.ms.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +67,6 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toResponseDto(compilation, eventDtos);
     }
 
-    // TODO оптимизировать запросы к БД
     @Override
     @Transactional
     public CompilationResponseDto addNewCompilation(CompilationPostDto dto) {
@@ -72,11 +74,7 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation compilation = CompilationMapper.toModel(dto, events);
         compilation = compilationRepo.save(compilation);
 
-        List<EventShortDto> eventDtos = events.stream()
-                .map((Event event) -> EventMapper.toEventShortDto(event,
-                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
-                        client.getViewsByEventId(event.getId()).getBody()))
-                .collect(Collectors.toList());
+        List<EventShortDto> eventDtos = getEventShortDtoList(events);
         return CompilationMapper.toResponseDto(compilation, eventDtos);
     }
 
@@ -86,7 +84,6 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepo.deleteById(compId);
     }
 
-    // TODO разобраться с методом
     @Override
     @Transactional
     public void deleteEventFromCompilation(Long compId, Long eventId) {
@@ -122,12 +119,20 @@ public class CompilationServiceImpl implements CompilationService {
         compilation.setPinned(true);
     }
 
-    // TODO оптимизировать запросы к БД
     private List<EventShortDto> getEventShortDtos(Compilation compilation) {
-        return compilation.getEvents().stream()
-                .map((Event event) -> EventMapper.toEventShortDto(event,
-                        participationRepo.getConfirmedRequests(event.getId(), ParticipationState.CONFIRMED),
-                        client.getViewsByEventId(event.getId()).getBody()))
+        return getEventShortDtoList(compilation.getEvents());
+    }
+
+    private List<EventShortDto> getEventShortDtoList(List<Event> events) {
+        List<Long> eventIds = getEventIdsList(events);
+        List<UtilDto> confirmedReqEventIdRelations = participationRepo
+                .countParticipationByEventIds(eventIds, ParticipationState.CONFIRMED);
+        List<UtilDto> viewsEventIdRelations = client.getViewsByEventIds(eventIds);
+        return events.stream()
+                .map((Event event) -> EventMapper.toEventShortDto(
+                        event,
+                        matchIntValueByEventId(confirmedReqEventIdRelations, event.getId()),
+                        matchLongValueByEventId(viewsEventIdRelations, event.getId())))
                 .collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package ru.practicum.ms.client;
+package ru.practicum.ms.client.dto;
 
 import lombok.Getter;
 import lombok.Setter;
