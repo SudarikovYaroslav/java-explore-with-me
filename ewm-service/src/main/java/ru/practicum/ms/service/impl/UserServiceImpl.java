@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ms.dto.user.NewUserDto;
 import ru.practicum.ms.dto.user.UserDto;
-import ru.practicum.ms.mappers.UserMapper;
+import ru.practicum.ms.handler.mappers.UserMapper;
 import ru.practicum.ms.model.User;
 import ru.practicum.ms.repository.UserRepository;
 import ru.practicum.ms.service.UserService;

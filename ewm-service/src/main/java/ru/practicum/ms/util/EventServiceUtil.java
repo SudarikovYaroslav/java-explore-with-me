@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import ru.practicum.ms.mappers.DateTimeMapper;
+import ru.practicum.ms.handler.mappers.DateTimeMapper;
 import ru.practicum.ms.model.Event;
 import ru.practicum.ms.model.EventSearchParams;
 import ru.practicum.ms.model.EventSort;

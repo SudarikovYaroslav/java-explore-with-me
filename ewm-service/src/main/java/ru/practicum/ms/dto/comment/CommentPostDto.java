@@ -1,0 +1,26 @@
+package ru.practicum.ms.dto.comment;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class CommentPostDto {
+
+    private static final int MIN_TEXT_LEN = 10;
+    private static final int MAX_TEXT_LEN = 1024;
+
+    @NotBlank
+    @Length(max = MAX_TEXT_LEN)
+    private String text;
+    @NotNull
+    private Long ownerId;
+    @NotNull
+    private Long eventId;
+}

@@ -9,7 +9,7 @@ import ru.practicum.ms.dto.category.CategoryDto;
 import ru.practicum.ms.dto.category.CategoryPostDto;
 import ru.practicum.ms.exception.ForbiddenException;
 import ru.practicum.ms.exception.NotFoundException;
-import ru.practicum.ms.mappers.CategoryMapper;
+import ru.practicum.ms.handler.mappers.CategoryMapper;
 import ru.practicum.ms.model.Category;
 import ru.practicum.ms.repository.CategoryRepository;
 import ru.practicum.ms.repository.EventRepository;

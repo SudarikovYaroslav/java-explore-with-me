@@ -1,4 +1,4 @@
-package ru.practicum.ms.mappers;
+package ru.practicum.ms.handler.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ms.dto.ParticipationDto;
 import ru.practicum.ms.exception.ForbiddenException;
 import ru.practicum.ms.exception.NotFoundException;
-import ru.practicum.ms.mappers.ParticipationMapper;
+import ru.practicum.ms.handler.mappers.ParticipationMapper;
 import ru.practicum.ms.model.*;
 import ru.practicum.ms.repository.EventRepository;
 import ru.practicum.ms.repository.ParticipationRepository;
