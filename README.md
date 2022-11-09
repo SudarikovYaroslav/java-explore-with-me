@@ -1,4 +1,4 @@
-# ![](логотип.png) EXPLORE-WITH-ME
+# ![](logo.png) EXPLORE-WITH-ME
 
 ---
 
