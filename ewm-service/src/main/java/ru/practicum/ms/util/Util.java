@@ -35,6 +35,10 @@ public class Util {
         return  "Participation request with id=" + requestId + " was not found.";
     }
 
+    public static String getCommentNotFoundMessage(long commentId) {
+        return  "Comment with id=" + commentId + " was not found.";
+    }
+
     public static EventSort parseSort(String str) {
         EventSort sort;
         try {

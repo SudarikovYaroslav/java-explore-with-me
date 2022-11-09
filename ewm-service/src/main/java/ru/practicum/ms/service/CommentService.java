@@ -9,7 +9,7 @@ import java.util.List;
 public interface CommentService {
     CommentResponseDto postComment(CommentPostDto comment);
 
-    CommentResponseDto patchComment(CommentPatchDto comment, Long userId, boolean admin);
+    CommentResponseDto patchComment(CommentPatchDto comment, Long userId);
 
     void deleteComment(Long commentId, Long userId, boolean admin);
 

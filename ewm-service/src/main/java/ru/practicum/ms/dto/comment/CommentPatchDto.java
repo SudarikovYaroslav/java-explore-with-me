@@ -24,4 +24,14 @@ public class CommentPatchDto {
     private String text;
     private Long ownerId;
     private Long eventId;
+
+    @Override
+    public String toString() {
+        return "CommentPatchDto{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", ownerId=" + ownerId +
+                ", eventId=" + eventId +
+                '}';
+    }
 }

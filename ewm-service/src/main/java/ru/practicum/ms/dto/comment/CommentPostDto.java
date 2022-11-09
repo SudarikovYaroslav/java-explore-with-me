@@ -23,4 +23,13 @@ public class CommentPostDto {
     private Long ownerId;
     @NotNull
     private Long eventId;
+
+    @Override
+    public String toString() {
+        return "CommentPostDto{" +
+                "text='" + text + '\'' +
+                ", ownerId=" + ownerId +
+                ", eventId=" + eventId +
+                '}';
+    }
 }
