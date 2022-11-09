@@ -1,4 +1,4 @@
-package ru.practicum.ms.handler.mappers;
+package ru.practicum.ms.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import ru.practicum.ms.dto.user.UserShortDto;
 import ru.practicum.ms.model.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserMapper {
+public final class UserMapper {
 
     public static User toModel(NewUserDto dto) {
         return User.builder()

@@ -19,22 +19,22 @@ import javax.validation.Valid;
 public class CommentPrivateController {
 
     public static final String USER_ID_HEADER = "X-User-Id";
-    public static final boolean ADMIN = false;
 
     private final CommentService commentService;
 
     @PostMapping
     public CommentResponseDto postComment(@Valid
-                                          @RequestBody CommentPostDto dto) {
-        log.info("Добавление нового комментария: {}", dto);
-        return commentService.postComment(dto);
+                                          @RequestBody CommentPostDto dto,
+                                          @RequestHeader(USER_ID_HEADER) Long userId) {
+        log.info("Добавление нового комментария:{} пользователем id:{}", dto, userId);
+        return commentService.postComment(dto, userId);
     }
 
     @PatchMapping
     public CommentResponseDto patchComment(@Validated({PatchValidMarker.class})
                                            @RequestBody CommentPatchDto dto,
                                            @RequestHeader(USER_ID_HEADER) Long userId) {
-        log.info("Обновление комментария id:{}, {}", dto.getId(), dto);
+        log.info("Обновление комментария id:{}, {} пользователем id:{}", dto.getId(), dto, userId);
         return commentService.patchComment(dto, userId);
     }
 
@@ -42,6 +42,6 @@ public class CommentPrivateController {
     public void deleteComment(@PathVariable Long commentId,
                               @RequestHeader(USER_ID_HEADER) Long userId) {
         log.info("Удаление комментария id:{} пользователем id:{}", commentId, userId);
-        commentService.deleteComment(commentId, userId, ADMIN);
+        commentService.deleteComment(commentId, userId);
     }
 }

@@ -14,4 +14,5 @@ public class CommentResponseDto {
     private String text;
     private UserShortDto owner;
     private EventShortDto event;
+    private String date;
 }

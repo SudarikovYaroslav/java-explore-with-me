@@ -1,4 +1,4 @@
-package ru.practicum.ms.handler.mappers;
+package ru.practicum.ms.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -11,7 +11,7 @@ import ru.practicum.ms.model.Event;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CompilationMapper {
+public final class CompilationMapper {
 
     public static Compilation toModel(CompilationPostDto dto, List<Event> events) {
         return Compilation.builder()

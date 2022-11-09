@@ -1,4 +1,4 @@
-package ru.practicum.ms.handler.mappers;
+package ru.practicum.ms.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,7 @@ import ru.practicum.ms.dto.category.CategoryPostDto;
 import ru.practicum.ms.model.Category;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CategoryMapper {
+public final class CategoryMapper {
 
     public static Category toModel(CategoryPostDto dto) {
         return Category.builder()

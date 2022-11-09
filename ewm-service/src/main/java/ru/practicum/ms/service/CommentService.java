@@ -7,11 +7,13 @@ import ru.practicum.ms.dto.comment.CommentResponseDto;
 import java.util.List;
 
 public interface CommentService {
-    CommentResponseDto postComment(CommentPostDto comment);
+    CommentResponseDto postComment(CommentPostDto comment, Long userId);
 
     CommentResponseDto patchComment(CommentPatchDto comment, Long userId);
 
-    void deleteComment(Long commentId, Long userId, boolean admin);
+    void deleteComment(Long commentId);
+
+    void deleteComment(Long commentId, Long userId);
 
     CommentResponseDto findCommentById(Long commentId);
 

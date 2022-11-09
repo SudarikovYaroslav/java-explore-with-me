@@ -71,5 +71,6 @@ CREATE TABLE IF NOT EXISTS comments
     text  varchar(1024)                                                 NOT NULL,
     owner_id BIGINT REFERENCES users (user_id)                          NOT NULL,
     event_id BIGINT REFERENCES events (event_id)                        NOT NULL,
+    date TIMESTAMP WITHOUT TIME ZONE                                    NOT NULL,
     PRIMARY KEY (comment_id)
 );

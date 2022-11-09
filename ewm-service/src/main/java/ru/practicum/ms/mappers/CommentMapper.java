@@ -1,4 +1,4 @@
-package ru.practicum.ms.handler.mappers;
+package ru.practicum.ms.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,13 +10,16 @@ import ru.practicum.ms.model.Comment;
 import ru.practicum.ms.model.Event;
 import ru.practicum.ms.model.User;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CommentMapper {
+public final class CommentMapper {
     public static Comment toModel(CommentPostDto dto, User owner, Event event) {
         return Comment.builder()
                 .text(dto.getText())
                 .owner(owner)
                 .event(event)
+                .date(LocalDateTime.now())
                 .build();
     }
 
@@ -26,6 +29,7 @@ public class CommentMapper {
                 .text(model.getText())
                 .owner(ownerDto)
                 .event(eventDto)
+                .date(DateTimeMapper.toString(model.getDate()))
                 .build();
     }
 }

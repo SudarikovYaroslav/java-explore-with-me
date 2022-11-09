@@ -1,4 +1,4 @@
-package ru.practicum.ms.handler.mappers;
+package ru.practicum.ms.mappers;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import ru.practicum.ms.model.User;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EventMapper {
+public final class EventMapper {
 
     public static Event toModel(EventPostDto dto, User initiator, Category category) {
         Event event = Event.builder()

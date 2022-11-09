@@ -22,7 +22,6 @@ public class CommentPatchDto {
     private Long id;
     @Length(min = MIN_TEXT_LEN, max = MAX_TEXT_LEN, groups = PatchValidMarker.class)
     private String text;
-    private Long ownerId;
     private Long eventId;
 
     @Override
@@ -30,7 +29,6 @@ public class CommentPatchDto {
         return "CommentPatchDto{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
-                ", ownerId=" + ownerId +
                 ", eventId=" + eventId +
                 '}';
     }

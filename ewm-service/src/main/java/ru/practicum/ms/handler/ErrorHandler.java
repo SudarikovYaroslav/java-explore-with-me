@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.ms.exception.ForbiddenException;
 import ru.practicum.ms.exception.NotFoundException;
-import ru.practicum.ms.handler.mappers.DateTimeMapper;
+import ru.practicum.ms.mappers.DateTimeMapper;
 
 import java.time.LocalDateTime;
 

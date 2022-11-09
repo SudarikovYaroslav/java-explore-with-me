@@ -2,7 +2,7 @@ package ru.practicum.ms.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.practicum.ms.handler.mappers.DateTimeMapper;
+import ru.practicum.ms.mappers.DateTimeMapper;
 import ru.practicum.ms.util.Util;
 
 import java.time.LocalDateTime;

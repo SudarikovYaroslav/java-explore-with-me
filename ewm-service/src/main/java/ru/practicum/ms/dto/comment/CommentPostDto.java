@@ -20,15 +20,12 @@ public class CommentPostDto {
     @Length(min = MIN_TEXT_LEN, max = MAX_TEXT_LEN)
     private String text;
     @NotNull
-    private Long ownerId;
-    @NotNull
     private Long eventId;
 
     @Override
     public String toString() {
         return "CommentPostDto{" +
                 "text='" + text + '\'' +
-                ", ownerId=" + ownerId +
                 ", eventId=" + eventId +
                 '}';
     }

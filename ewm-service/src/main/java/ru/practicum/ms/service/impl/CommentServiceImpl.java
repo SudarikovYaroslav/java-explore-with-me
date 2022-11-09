@@ -12,9 +12,9 @@ import ru.practicum.ms.dto.event.EventShortDto;
 import ru.practicum.ms.dto.user.UserShortDto;
 import ru.practicum.ms.exception.ForbiddenException;
 import ru.practicum.ms.exception.NotFoundException;
-import ru.practicum.ms.handler.mappers.CommentMapper;
-import ru.practicum.ms.handler.mappers.EventMapper;
-import ru.practicum.ms.handler.mappers.UserMapper;
+import ru.practicum.ms.mappers.CommentMapper;
+import ru.practicum.ms.mappers.EventMapper;
+import ru.practicum.ms.mappers.UserMapper;
 import ru.practicum.ms.model.Comment;
 import ru.practicum.ms.model.Event;
 import ru.practicum.ms.model.ParticipationState;
@@ -44,9 +44,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public CommentResponseDto postComment(CommentPostDto dto) {
-        User owner = userRepo.findById(dto.getOwnerId())
-                .orElseThrow(() -> new NotFoundException(Util.getUserNotFoundMessage(dto.getOwnerId())));
+    public CommentResponseDto postComment(CommentPostDto dto, Long userId) {
+        User owner = userRepo.findById(userId)
+                .orElseThrow(() -> new NotFoundException(Util.getUserNotFoundMessage(userId)));
         Event event = eventRepo.findById(dto.getEventId())
                 .orElseThrow(() -> new NotFoundException(Util.getEventNotFoundMessage(dto.getEventId())));
         Comment comment = CommentMapper.toModel(dto, owner, event);
@@ -57,27 +57,31 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto patchComment(CommentPatchDto dto, Long userId) {
-        if (!dto.getId().equals(userId)) {
+        Comment comment = commentRepo.findById(dto.getId())
+                .orElseThrow(() -> new NotFoundException(Util.getCommentNotFoundMessage(dto.getId())));
+        if (!comment.getOwner().getId().equals(userId)) {
             throw new ForbiddenException("Пользователь id:" + userId
                     + " не является создателем комментария");
         }
-        Comment comment = commentRepo.findById(dto.getId())
-                .orElseThrow(() -> new NotFoundException(Util.getCommentNotFoundMessage(dto.getId())));
         updateComment(comment, dto);
         return mapToCommentResponseDto(comment);
     }
 
     @Override
     @Transactional
-    public void deleteComment(Long commentId, Long userId, boolean admin) {
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepo.findById(commentId)
+                .orElseThrow(() -> new NotFoundException(Util.getCommentNotFoundMessage(commentId)));
+        commentRepo.deleteById(commentId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long commentId, Long userId) {
         Comment comment = commentRepo.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(Util.getCommentNotFoundMessage(commentId)));
         Long ownerId = comment.getOwner().getId();
         if (!ownerId.equals(userId)) {
-            if (admin) {
-                commentRepo.deleteById(commentId);
-                return;
-            }
             throw new ForbiddenException("Пользователь id:" + userId
                     + " не является создателем комментария или администратором");
         }
