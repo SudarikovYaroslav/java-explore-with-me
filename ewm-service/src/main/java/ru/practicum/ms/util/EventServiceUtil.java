@@ -42,7 +42,7 @@ public class EventServiceUtil {
             }
             if (publicRequest) {
                 predicates.add(criteriaBuilder.equal(root.get("state"), PublicationState.PUBLISHED));
-            } else {
+            } else if (null != params.getStates()) {
                 for (PublicationState state : params.getStates()) {
                     predicates.add(criteriaBuilder.in(root.get("state")).value(state));
                 }

@@ -32,9 +32,11 @@ public class EventAdminController {
                                                          @RequestParam(required = false) String rangeStart,
                                                          @RequestParam(required = false) String rangeEnd,
                                                          @PositiveOrZero
-                                                         @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+                                                         @RequestParam(required = false, defaultValue = DEFAULT_FROM)
+                                                         Integer from,
                                                          @Positive
-                                                         @RequestParam(defaultValue = DEFAULT_SIZE) Integer size) {
+                                                         @RequestParam(required = false, defaultValue = DEFAULT_SIZE)
+                                                         Integer size) {
         EventSearchParams searchParams = new EventSearchParams(
                 userIds,
                 states,
