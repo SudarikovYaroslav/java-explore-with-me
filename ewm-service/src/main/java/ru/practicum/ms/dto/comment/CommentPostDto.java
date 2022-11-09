@@ -17,7 +17,7 @@ public class CommentPostDto {
     private static final int MAX_TEXT_LEN = 1024;
 
     @NotBlank
-    @Length(min = MIN_TEXT_LEN ,max = MAX_TEXT_LEN)
+    @Length(min = MIN_TEXT_LEN, max = MAX_TEXT_LEN)
     private String text;
     @NotNull
     private Long ownerId;

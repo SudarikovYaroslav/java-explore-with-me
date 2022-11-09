@@ -58,8 +58,8 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentResponseDto patchComment(CommentPatchDto dto, Long userId) {
         if (!dto.getId().equals(userId)) {
-            throw new ForbiddenException("Пользователь id: " + userId
-                    + "не является создателем комментария");
+            throw new ForbiddenException("Пользователь id:" + userId
+                    + " не является создателем комментария");
         }
         Comment comment = commentRepo.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException(Util.getCommentNotFoundMessage(dto.getId())));
@@ -72,9 +72,14 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId, Long userId, boolean admin) {
         Comment comment = commentRepo.findById(commentId)
                 .orElseThrow(() -> new NotFoundException(Util.getCommentNotFoundMessage(commentId)));
-        if (!comment.getId().equals(userId) || !admin) {
-            throw new ForbiddenException("Пользователь id: " + userId
-                    + "не является создателем комментария или администратором");
+        Long ownerId = comment.getOwner().getId();
+        if (!ownerId.equals(userId)) {
+            if (admin) {
+                commentRepo.deleteById(commentId);
+                return;
+            }
+            throw new ForbiddenException("Пользователь id:" + userId
+                    + " не является создателем комментария или администратором");
         }
         commentRepo.deleteById(commentId);
     }
