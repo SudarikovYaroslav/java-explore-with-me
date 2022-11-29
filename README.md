@@ -15,5 +15,3 @@
 и оставляйте свои комментарии к ним. 
 
 ###### EWM - надёжный помощник в организации вашего личного времени 
-### ссылка на pull request:
-https://github.com/SudarikovYaroslav/java-explore-with-me/pull/1
