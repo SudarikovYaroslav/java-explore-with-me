@@ -11,7 +11,7 @@ import ru.practicum.ms.model.Event;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CompilationMapper {
+public final class CompilationMapper {
 
     public static Compilation toModel(CompilationPostDto dto, List<Event> events) {
         return Compilation.builder()

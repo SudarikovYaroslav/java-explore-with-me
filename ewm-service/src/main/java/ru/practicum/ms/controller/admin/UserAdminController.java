@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.ms.dto.user.NewUserDto;
 import ru.practicum.ms.dto.user.UserDto;
 import ru.practicum.ms.service.UserService;
+import ru.practicum.ms.util.CommonValidMarker;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -36,7 +36,7 @@ public class UserAdminController {
     }
 
     @PostMapping
-    public UserDto postUser(@Valid
+    public UserDto postUser(@Validated({CommonValidMarker.class})
                             @RequestBody NewUserDto dto) {
         log.info("Post User {}", dto);
         return userService.postUser(dto);

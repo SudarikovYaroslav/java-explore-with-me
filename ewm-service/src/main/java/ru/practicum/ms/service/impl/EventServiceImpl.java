@@ -46,7 +46,10 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public List<EventShortDto> getEvents(EventSearchParams params, String clientIp, String endpoint) {
-        Sort sort = getSort(params.getSort());
+        Sort sort = Sort.unsorted();
+        if (params.getSort() != null) {
+            sort = getSort(params.getSort());
+        }
         Pageable pageable = PageRequest.of(params.getFrom() / params.getSize(), params.getSize(), sort);
         Specification<Event> specification = getSpecification(params, true);
         List<Event> events = eventRepo.findAll(specification, pageable).toList();

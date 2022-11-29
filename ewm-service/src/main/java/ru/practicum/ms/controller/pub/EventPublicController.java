@@ -35,9 +35,9 @@ public class EventPublicController {
                                          @RequestParam(required = false) Boolean onlyAvailable,
                                          @RequestParam(required = false) String sort,
                                          @PositiveOrZero
-                                         @RequestParam(defaultValue = DEFAULT_FROM) Integer from,
+                                         @RequestParam(required = false, defaultValue = DEFAULT_FROM) Integer from,
                                          @Positive
-                                         @RequestParam(defaultValue = DEFAULT_SIZE) Integer size,
+                                         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
                                          HttpServletRequest request) {
         String clientIp = request.getRemoteAddr();
         String endpoint = request.getRequestURI();

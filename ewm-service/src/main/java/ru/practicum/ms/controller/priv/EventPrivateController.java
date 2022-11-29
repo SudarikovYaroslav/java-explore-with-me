@@ -50,9 +50,9 @@ public class EventPrivateController {
     }
 
     @PostMapping
-    public EventDetailedDto postEvent(@Valid
-                                      @Positive
+    public EventDetailedDto postEvent(@Positive
                                       @PathVariable Long userId,
+                                      @Valid
                                       @RequestBody EventPostDto dto) {
         log.info("post event {}, owner id:{}", dto, userId);
         return eventService.postEvent(userId, dto);

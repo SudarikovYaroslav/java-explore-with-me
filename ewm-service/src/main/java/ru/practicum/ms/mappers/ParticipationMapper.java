@@ -10,7 +10,7 @@ import ru.practicum.ms.model.ParticipationState;
 import ru.practicum.ms.model.User;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ParticipationMapper {
+public final class ParticipationMapper {
 
     public static Participation toModel(ParticipationDto dto, Event event, User requester) {
         return Participation.builder()

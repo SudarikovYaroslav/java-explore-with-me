@@ -10,7 +10,7 @@ import ru.paracticum.ss.model.Hit;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class HitMapper {
+public final class HitMapper {
 
     public static Hit toModel(HitPostDto dto, App app) {
         Hit hit = Hit.builder()

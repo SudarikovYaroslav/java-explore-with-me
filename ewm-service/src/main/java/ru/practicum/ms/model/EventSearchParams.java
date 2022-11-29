@@ -31,7 +31,9 @@ public class EventSearchParams {
                             Integer from,
                             Integer size) {
         this.userIds = usersIds;
-        this.states = Util.mapToStates(states);
+        if (states != null) {
+            this.states = Util.mapToStates(states);
+        }
         this.categories = categories;
         if (rangeStart != null) {
             this.rangeStart = DateTimeMapper.toDateTime(rangeStart);
